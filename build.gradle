@@ -1,0 +1,70 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.3.2' // Spring Boot 플러그인
+    id 'io.spring.dependency-management' version '1.1.6' // 의존성 관리 플러그인
+    id 'groovy' // Groovy 지원 (선택사항)
+    id 'idea' // IntelliJ IDEA 지원
+}
+
+group = 'com.emoney'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    sourceCompatibility = '21'
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0'
+
+    implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+    annotationProcessor 'com.querydsl:querydsl-apt:5.0.0:jakarta'
+    annotationProcessor 'jakarta.persistence:jakarta.persistence-api'
+    annotationProcessor 'jakarta.annotation:jakarta.annotation-api'
+
+    runtimeOnly 'com.h2database:h2'
+
+    annotationProcessor 'org.projectlombok:lombok'
+    compileOnly 'org.projectlombok:lombok'
+
+    implementation 'org.mapstruct:mapstruct:1.6.0'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.0'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+def querydslGeneratedDir = file("build/generated/querydsl")
+def mapstructGeneratedDir = file("build/generated/mapstruct")
+
+sourceSets {
+    main {
+        java {
+            srcDir querydslGeneratedDir
+            srcDir mapstructGeneratedDir
+        }
+    }
+}
+
+tasks.named('compileJava') {
+    options.annotationProcessorGeneratedSourcesDirectory = file("build/generated/sources/annotationProcessor/java/main")
+    options.compilerArgs += [
+            "-Amapstruct.defaultComponentModel=spring"
+    ]
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
