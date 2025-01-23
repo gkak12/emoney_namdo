@@ -3,6 +3,7 @@ package com.emoney.service.impl;
 import com.emoney.domain.dto.EmoneyCreateDto;
 import com.emoney.domain.dto.EmoneyExtendDto;
 import com.emoney.domain.dto.EmoneyUpdateDto;
+import com.emoney.domain.entity.Emoney;
 import com.emoney.domain.mapper.EmoneyMapper;
 import com.emoney.domain.vo.EmoneyVo;
 import com.emoney.repository.EmoneyRepository;
@@ -32,7 +33,11 @@ public class EmoneyServiceImpl implements EmoneyService {
 
     @Override
     public void createEmoney(EmoneyCreateDto emoneyCreateDto) {
+        Emoney emoney = emoneyMapper.toCreateEntity(emoneyCreateDto);
+        emoney.setUsageAmonut(0L);
+        emoney.setRemainAmount(0L);
 
+        emoneyRepository.save(emoney);
     }
 
     @Override
