@@ -18,6 +18,9 @@ public class EmoneyUsageHistory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long emoneyUsageHistorySeq;
 
+    @Column(name = "USAGE_TYPE_SEQ")
+    private Long usageTypeSeq;
+
     @Column(name = "USAGE_AMOUNT")
     private Long usageAmount;
 

@@ -1,20 +1,21 @@
 CREATE TABLE EMONEY(
-    EMONEY_SEQ BIGINT AUTO_INCREMENT PRIMARY KEY,
-    USER_SEQ BIGINT,
-    ORDER_SEQ BIGINT,
-    TYPE_SEQ BIGINT,
-    AMOUNT BIGINT,
-    USED_AMONUT BIGINT,
-    REMAIN_AMOUNT BIGINT,
-    EXPIRATION_DATE TIMESTAMP,
-    IS_APPROVED BOOLEAN DEFAULT FALSE,
-    CONTENT VARCHAR(100)
+    EMONEY_SEQ BIGINT AUTO_INCREMENT PRIMARY KEY,   -- 적립금 SEQ
+    USER_SEQ BIGINT,                                -- 사용자 SEQ
+    ORDER_SEQ BIGINT,                               -- 주문 SEQ
+    TYPE_SEQ BIGINT,                                -- 적립금 타입 SEQ(회원가입, 텍스트 리뷰, 포토 리뷰, 이벤트)
+    AMOUNT BIGINT,                                  -- 적립금(초기 적립받은 금액)
+    USAGE_AMOUNT BIGINT,                            -- 사용한 적립금
+    REMAIN_AMOUNT BIGINT,                           -- 잔여 적립금
+    EXPIRATION_DATE TIMESTAMP,                      -- 만료일시
+    IS_APPROVED BOOLEAN DEFAULT FALSE,              -- 승인여부
+    CONTENT VARCHAR(100)                            -- 내용
 )
 
 CREATE TABLE EMONEY_USAGE_HISTORY(
-    EMONEY_USAGE_HISTORY_SEQ BIGINT AUTO_INCREMENT PRIMARY KEY,
-    USAGE_AMOUNT BIGINT,
-    CONTENT VARCHAR(100),
-    EMONEY_SEQ BIGINT,
-    FOREIGN KEY (EMONEY_SEQ) REFERENCES EMONEY(EMONEY_SEQ)
+    EMONEY_USAGE_HISTORY_SEQ BIGINT AUTO_INCREMENT PRIMARY KEY,     -- 적립금 사용 SEQ
+    USAGE_TYPE_SEQ BIGINT,                                          -- 적립금 사용 타입 SEQ
+    USAGE_AMOUNT BIGINT,                                            -- 사용한 적립금
+    CONTENT VARCHAR(100),                                           -- 내용
+    EMONEY_SEQ BIGINT,                                              -- 적립금 SEQ
+    FOREIGN KEY (EMONEY_SEQ) REFERENCES EMONEY(EMONEY_SEQ)          -- 적립금 참조키
 )
