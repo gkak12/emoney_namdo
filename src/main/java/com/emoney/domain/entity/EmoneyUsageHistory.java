@@ -26,7 +26,7 @@ public class EmoneyUsageHistory {
     private Long usageAmount;
 
     @Column(name = "CONTENT")
-    private Long content;
+    private String content;
 
     @Column(name = "CREATION_DATE")
     private LocalDateTime creationDate;
