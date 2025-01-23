@@ -37,14 +37,17 @@ public class Emoney {
     @Column(name = "REMAIN_AMOUNT")
     private Long remainAmount;
 
-    @Column(name = "EXPIRATION_DATE")
-    private LocalDateTime expirationDate;
-
     @Column(name = "IS_APPROVED")
     private Boolean isApproved;
 
     @Column(name = "CONTENT")
     private String content;
+
+    @Column(name = "EXPIRATION_DATE")
+    private LocalDateTime expirationDate;
+
+    @Column(name = "CREATION_DATE")
+    private LocalDateTime creationDate;
 
     @JsonManagedReference
     @OneToMany(mappedBy = "emoney", fetch = FetchType.LAZY, cascade = CascadeType.ALL)

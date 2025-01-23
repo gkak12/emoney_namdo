@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -26,6 +27,9 @@ public class EmoneyUsageHistory {
 
     @Column(name = "CONTENT")
     private Long content;
+
+    @Column(name = "CREATION_DATE")
+    private LocalDateTime creationDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "EMONEY_SEQ")
