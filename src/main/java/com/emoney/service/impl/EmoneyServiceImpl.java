@@ -43,7 +43,7 @@ public class EmoneyServiceImpl implements EmoneyService {
     public void createEmoney(EmoneyCreateDto emoneyCreateDto) {
         Emoney emoney = emoneyMapper.toCreateEntity(emoneyCreateDto);
         emoney.setUsageAmonut(0L);
-        emoney.setRemainAmount(0L);
+        emoney.setRemainAmount(emoneyCreateDto.getAmount());
 
         emoneyRepository.save(emoney);
     }
@@ -62,9 +62,10 @@ public class EmoneyServiceImpl implements EmoneyService {
         ZoneId zoneId = ZoneId.of("Asia/Seoul");
         ZonedDateTime zoneSeoulDateTime = ZonedDateTime.now(zoneId);
         LocalDateTime localDateTime = zoneSeoulDateTime.toLocalDateTime();
+        emoneyUsageDto.setSearchDateTime(localDateTime);
 
         // 1. 사용 요청한 적립금이 사용 가능 잔액 누적 적립금 보다 큰지 비교(적립금 잔액 검사)
-        List<Emoney> emoneyList = emoneyRepository.findAllUsableEmoneyList(userSeq);
+        List<Emoney> emoneyList = emoneyRepository.findAllUsableEmoneyList(emoneyUsageDto);
         Long totalRemainAmount = emoneyList.stream()
                 .map(Emoney::getRemainAmount)
                 .reduce(0L, Long::sum);
@@ -94,6 +95,7 @@ public class EmoneyServiceImpl implements EmoneyService {
                             .usageTypeSeq(emoneyUsageDto.getUsageTypeSeq())
                             .usageAmount(emoneyUsageAmount)
                             .content(emoneyUsageDto.getContent())
+                            .emoney(emoney)
                             .creationDate(localDateTime)
                             .build()
             );
