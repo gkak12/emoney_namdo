@@ -23,7 +23,7 @@ public interface EmoneyMapper {
     Emoney toCreateEntity(EmoneyCreateDto emoneyCreateDto);
 
     @AfterMapping
-    default void setAdditionalFields(@MappingTarget Emoney emoney, EmoneyCreateDto emoneyCreateDto) {
+    default void setAdditionalFields(EmoneyCreateDto emoneyCreateDto, @MappingTarget Emoney emoney) {
         emoney.setUsageAmount(0L);
         emoney.setRemainAmount(emoneyCreateDto.getAmount());
         emoney.setCreationDate(DateTimeUtil.getLocalDateTime());
