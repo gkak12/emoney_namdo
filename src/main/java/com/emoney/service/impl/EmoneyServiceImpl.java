@@ -74,37 +74,30 @@ public class EmoneyServiceImpl implements EmoneyService {
         // 2. 적립금 사용
         for(Emoney emoney : emoneyList){
             Long emoneyRemainAmount = emoney.getRemainAmount();
-            Long emoneyUsedAmount = null;
 
             /**
              * 2-1. 사용 요청한 적립금이 현재 적립금 보다 크면, 사용한 적립금을 현재 적립금으로 처리 및 현재 잔액 적립금을 0원으로 처리
              *      반대로 작거나 같으면, 사용한 적립금을 사용 요청한 적립금으로 처리 및 현재 잔액 적립금에서 사용 요청한 적립금을 차감 처리
              */
-            if(emoneyRequestAmount > emoneyRemainAmount){
-                emoneyUsedAmount = emoneyRemainAmount;
-                emoneyRemainAmount = 0L;
-            } else {
-                emoneyUsedAmount = emoneyRequestAmount;
-                emoneyRemainAmount = emoneyRemainAmount - emoneyRequestAmount;
-            }
+            Long emoneyUsageAmount = emoneyRequestAmount > emoneyRemainAmount ? emoneyRemainAmount : emoneyRequestAmount;
 
             // 2-2. 현재 적립금 수정
-            emoney.setUsageAmonut(emoneyUsedAmount);
-            emoney.setRemainAmount(emoneyRemainAmount);
+            emoney.setUsageAmonut(emoney.getUsageAmonut() + emoneyUsageAmount);
+            emoney.setRemainAmount(emoney.getRemainAmount() - emoneyUsageAmount);
             emoneyRepository.save(emoney);
             
             // 2-3. 적립금 사용내역 등록
             emoneyUsageHistoryRepository.save(
                     EmoneyUsageHistory.builder()
                             .usageTypeSeq(emoneyUsageDto.getUsageTypeSeq())
-                            .usageAmount(emoneyUsedAmount)
+                            .usageAmount(emoneyUsageAmount)
                             .content(emoneyUsageDto.getContent())
                             .creationDate(localDateTime)
                             .build()
             );
 
             // 2-4. 사용 요청한 적립금 차감
-            emoneyRequestAmount = emoneyRequestAmount - emoneyUsedAmount;
+            emoneyRequestAmount = emoneyRequestAmount - emoneyUsageAmount;
 
             // 2-5. 사용 요청한 적립금 다 사용한 경우 루프 종료
             if(emoneyRequestAmount <= 0){
