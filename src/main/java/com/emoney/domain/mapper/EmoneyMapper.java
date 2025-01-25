@@ -1,5 +1,6 @@
 package com.emoney.domain.mapper;
 
+import com.emoney.comm.DateTimeUtil;
 import com.emoney.domain.dto.EmoneyCreateDto;
 import com.emoney.domain.entity.Emoney;
 import com.emoney.domain.vo.EmoneyVo;
@@ -15,5 +16,16 @@ import org.mapstruct.*;
 public interface EmoneyMapper {
 
     EmoneyVo toVo(Emoney emoney);
+
+    @Mapping(target = "usageAmount", ignore = true)
+    @Mapping(target = "remainAmount", ignore = true)
+    @Mapping(target = "creationDate", ignore = true)
     Emoney toCreateEntity(EmoneyCreateDto emoneyCreateDto);
+
+    @AfterMapping
+    default void setAdditionalFields(@MappingTarget Emoney emoney, EmoneyCreateDto emoneyCreateDto) {
+        emoney.setUsageAmount(0L);
+        emoney.setRemainAmount(emoneyCreateDto.getAmount());
+        emoney.setCreationDate(DateTimeUtil.getLocalDateTime());
+    }
 }

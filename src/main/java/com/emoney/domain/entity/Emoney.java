@@ -36,7 +36,7 @@ public class Emoney {
     private Long amount;
 
     @Column(name = "USAGE_AMOUNT")
-    private Long usageAmonut;
+    private Long usageAmount;
 
     @Column(name = "REMAIN_AMOUNT")
     private Long remainAmount;

@@ -41,10 +41,6 @@ public class EmoneyServiceImpl implements EmoneyService {
     @Transactional
     public void createEmoney(EmoneyCreateDto emoneyCreateDto) {
         Emoney emoney = emoneyMapper.toCreateEntity(emoneyCreateDto);
-        emoney.setUsageAmonut(0L);
-        emoney.setRemainAmount(emoneyCreateDto.getAmount());
-        emoney.setCreationDate(DateTimeUtil.getLocalDateTime());
-
         emoneyRepository.save(emoney);
     }
 
@@ -86,7 +82,7 @@ public class EmoneyServiceImpl implements EmoneyService {
              * 3-2. 현재 적립금 정보 수정
              *      현재 적립금의 사용한 적립금과 잔액 적립금 누적 갱신
              */
-            emoney.setUsageAmonut(emoney.getUsageAmonut() + emoneyUsageAmount);
+            emoney.setUsageAmount(emoney.getUsageAmount() + emoneyUsageAmount);
             emoney.setRemainAmount(emoney.getRemainAmount() - emoneyUsageAmount);
             emoneyRepository.save(emoney);
             
@@ -117,7 +113,7 @@ public class EmoneyServiceImpl implements EmoneyService {
                         .orderSeq(emoneyUsageDto.getOrderSeq())
                         .typeSeq(emoneyUsageDto.getUsageTypeSeq())
                         .amount(emoneyUsageDto.getAmount())
-                        .usageAmonut(emoneyUsageDto.getAmount())
+                        .usageAmount(emoneyUsageDto.getAmount())
                         .remainAmount(0L)
                         .isApproved(true)
                         .content(emoneyUsageDto.getContent())
