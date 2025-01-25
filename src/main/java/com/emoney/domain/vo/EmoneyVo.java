@@ -2,8 +2,6 @@ package com.emoney.domain.vo;
 
 import lombok.Data;
 
-import java.time.LocalDateTime;
-
 @Data
 public class EmoneyVo {
 
@@ -11,9 +9,10 @@ public class EmoneyVo {
     private Long orderSeq;
     private Long typeSeq;
     private Long amount;
-    private Long usedAmonut;
+    private Long usageAmount;
     private Long remainAmount;
-    private LocalDateTime expirationDate;
+    private String expirationDate;
+    private String creationDate;
     private Boolean isApproved;
     private String content;
 }
