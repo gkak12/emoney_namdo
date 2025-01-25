@@ -1,5 +1,6 @@
 package com.emoney.service.impl;
 
+import com.emoney.comm.DateTimeUtil;
 import com.emoney.domain.dto.EmoneyCreateDto;
 import com.emoney.domain.dto.EmoneyExtendDto;
 import com.emoney.domain.dto.EmoneyUpdateDto;
@@ -17,8 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.List;
 
 @Slf4j
@@ -44,6 +43,7 @@ public class EmoneyServiceImpl implements EmoneyService {
         Emoney emoney = emoneyMapper.toCreateEntity(emoneyCreateDto);
         emoney.setUsageAmonut(0L);
         emoney.setRemainAmount(emoneyCreateDto.getAmount());
+        emoney.setCreationDate(DateTimeUtil.getLocalDateTime());
 
         emoneyRepository.save(emoney);
     }
@@ -58,10 +58,7 @@ public class EmoneyServiceImpl implements EmoneyService {
     public void useEmoney(EmoneyUsageDto emoneyUsageDto) {
         Long userSeq = emoneyUsageDto.getUserSeq();
         Long emoneyRequestAmount = emoneyUsageDto.getAmount();
-
-        ZoneId zoneId = ZoneId.of("Asia/Seoul");
-        ZonedDateTime zoneSeoulDateTime = ZonedDateTime.now(zoneId);
-        LocalDateTime localDateTime = zoneSeoulDateTime.toLocalDateTime();
+        LocalDateTime localDateTime = DateTimeUtil.getLocalDateTime();
         emoneyUsageDto.setSearchDateTime(localDateTime);
 
         // 1. 사용 요청한 적립금이 사용 가능 잔액 누적 적립금 보다 큰지 비교(적립금 잔액 검사)
