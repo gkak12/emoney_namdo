@@ -17,5 +17,13 @@ public class EmoneyUsageDto {
     private Long orderSeq;
 
     @NotNull
+    private Long typeSeq;
+
+    @NotNull
+    private Long usageTypeSeq;
+
+    @NotNull
     private Long amount;
+
+    private String content;
 }
