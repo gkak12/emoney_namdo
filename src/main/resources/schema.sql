@@ -2,7 +2,7 @@ CREATE TABLE EMONEY(
     EMONEY_SEQ BIGINT AUTO_INCREMENT PRIMARY KEY,   -- 적립금 SEQ
     USER_SEQ BIGINT,                                -- 사용자 SEQ
     ORDER_SEQ BIGINT,                               -- 주문 SEQ
-    TYPE_SEQ BIGINT,                                -- 적립금 타입 SEQ(회원가입, 텍스트 리뷰, 포토 리뷰, 이벤트)
+    TYPE_SEQ BIGINT,                                -- 적립금 타입 SEQ(회원가입, 텍스트 리뷰, 포토 리뷰, 이벤트, 사용, 차감)
     AMOUNT BIGINT,                                  -- 적립금(초기 적립받은 금액)
     USAGE_AMOUNT BIGINT,                            -- 사용한 적립금
     REMAIN_AMOUNT BIGINT,                           -- 잔여 적립금
