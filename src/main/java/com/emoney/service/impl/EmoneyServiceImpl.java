@@ -56,12 +56,13 @@ public class EmoneyServiceImpl implements EmoneyService {
     @Override
     @Transactional
     public void useEmoney(EmoneyUsageDto emoneyUsageDto) {
+        // 1. 적립금 사용 요청 정보 세팅
         Long userSeq = emoneyUsageDto.getUserSeq();
         Long emoneyRequestAmount = emoneyUsageDto.getAmount();
         LocalDateTime localDateTime = DateTimeUtil.getLocalDateTime();
         emoneyUsageDto.setSearchDateTime(localDateTime);
 
-        // 1. 사용 요청한 적립금이 사용 가능 잔액 누적 적립금 보다 큰지 비교(적립금 잔액 검사)
+        // 2. 사용 요청한 적립금이 사용 가능 잔액 누적 적립금 보다 큰지 비교(적립금 잔액 검사)
         List<Emoney> emoneyList = emoneyRepository.findAllUsableEmoneyList(emoneyUsageDto);
         Long totalRemainAmount = emoneyList.stream()
                 .map(Emoney::getRemainAmount)
@@ -71,29 +72,32 @@ public class EmoneyServiceImpl implements EmoneyService {
             throw new RuntimeException("사용 요청한 적립금이 사용 가능 잔액 누적 적립금 보다 커서 불가합니다.");
         }
 
-        // 2. 적립금 사용
+        // 3. 적립금 사용
         for(Emoney emoney : emoneyList){
             Long emoneyRemainAmount = emoney.getRemainAmount();
 
             /**
-             * 2-1. 사용 요청한 적립금이 현재 적립금 보다 크면, 사용한 적립금을 현재 적립금으로 처리 및 현재 잔액 적립금을 0원으로 처리
-             *      반대로 작거나 같으면, 사용한 적립금을 사용 요청한 적립금으로 처리 및 현재 잔액 적립금에서 사용 요청한 적립금을 차감 처리
+             * 3-1. 사용 요청한 적립금이 현재 잔액 적립금 보다 크면, 사용한 적립금을 현재 잔액 적립금으로 처리
+             *      반대로 작거나 같으면, 사용한 적립금을 사용 요청한 적립금으로 처리
              */
             Long emoneyUsageAmount = emoneyRequestAmount > emoneyRemainAmount ? emoneyRemainAmount : emoneyRequestAmount;
 
-            // 2-2. 현재 적립금 수정
+            /**
+             * 3-2. 현재 적립금 정보 수정
+             *      현재 적립금의 사용한 적립금과 잔액 적립금 누적 갱신
+             */
             emoney.setUsageAmonut(emoney.getUsageAmonut() + emoneyUsageAmount);
             emoney.setRemainAmount(emoney.getRemainAmount() - emoneyUsageAmount);
             emoneyRepository.save(emoney);
             
-            // 2-3. 적립금 사용내역 등록
+            // 3-3. 적립금 사용내역 테이블 등록
             emoneyUsageHistoryRepository.save(
                     EmoneyUsageHistory.builder()
                             .usageTypeSeq(emoneyUsageDto.getUsageTypeSeq())
                             .usageAmount(emoneyUsageAmount)
                             .content(emoneyUsageDto.getContent())
-                            .emoney(emoney)
                             .creationDate(localDateTime)
+                            .emoney(emoney)
                             .build()
             );
 
@@ -106,7 +110,7 @@ public class EmoneyServiceImpl implements EmoneyService {
             }
         }
 
-        // 3. 사용 요청한 적립금 등록
+        // 3. 사용 요청한 적립금 정보 적립금 테이블 등록
         emoneyRepository.save(
                 Emoney.builder()
                         .userSeq(userSeq)
