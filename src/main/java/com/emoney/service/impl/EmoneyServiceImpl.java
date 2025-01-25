@@ -39,6 +39,7 @@ public class EmoneyServiceImpl implements EmoneyService {
     }
 
     @Override
+    @Transactional
     public void createEmoney(EmoneyCreateDto emoneyCreateDto) {
         Emoney emoney = emoneyMapper.toCreateEntity(emoneyCreateDto);
         emoney.setUsageAmonut(0L);
@@ -53,6 +54,7 @@ public class EmoneyServiceImpl implements EmoneyService {
     }
 
     @Override
+    @Transactional
     public void useEmoney(EmoneyUsageDto emoneyUsageDto) {
         Long userSeq = emoneyUsageDto.getUserSeq();
         Long emoneyRequestAmount = emoneyUsageDto.getAmount();
