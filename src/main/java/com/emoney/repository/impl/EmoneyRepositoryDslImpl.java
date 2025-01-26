@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.emoney.domain.entity.QEmoney.emoney;
@@ -33,6 +32,7 @@ public class EmoneyRepositoryDslImpl implements EmoneyRepositoryDsl {
                 .select(emoney)
                 .from(emoney)
                 .where(builder)
+                .orderBy(emoney.expirationDate.asc())
                 .fetch();
     }
 }
