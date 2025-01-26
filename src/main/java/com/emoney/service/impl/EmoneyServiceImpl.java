@@ -142,6 +142,7 @@ public class EmoneyServiceImpl implements EmoneyService {
                         .remainAmount(amount)
                         .content(emoneyCancelDto.getContent())
                         .expirationDate(expirationDate)
+                        .creationDate(DateTimeUtil.getLocalDateTime())
                         .build()
         );
     }
