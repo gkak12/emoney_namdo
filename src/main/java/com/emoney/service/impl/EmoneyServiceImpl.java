@@ -1,9 +1,9 @@
 package com.emoney.service.impl;
 
 import com.emoney.comm.DateTimeUtil;
+import com.emoney.domain.dto.EmoneyCancelDto;
 import com.emoney.domain.dto.EmoneyCreateDto;
 import com.emoney.domain.dto.EmoneyExtendDto;
-import com.emoney.domain.dto.EmoneyUpdateDto;
 import com.emoney.domain.dto.EmoneyUsageDto;
 import com.emoney.domain.entity.Emoney;
 import com.emoney.domain.entity.EmoneyUsageHistory;
@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -27,6 +28,7 @@ import java.util.List;
 public class EmoneyServiceImpl implements EmoneyService {
 
     private final EmoneyMapper emoneyMapper;
+
     private final EmoneyRepository emoneyRepository;
     private final EmoneyUsageHistoryRepository emoneyUsageHistoryRepository;
 
@@ -125,8 +127,23 @@ public class EmoneyServiceImpl implements EmoneyService {
     }
 
     @Override
-    public void useCancelEmoney(EmoneyUpdateDto emoneyUpdateDto) {
-
+    @Transactional
+    public void useCancelEmoney(EmoneyCancelDto emoneyCancelDto) {
+        Map<String, Object> resultMap = emoneyRepository.findCancellationEmoney(emoneyCancelDto);
+        LocalDateTime expirationDate = (LocalDateTime) resultMap.get("expirationDate");
+        Long amount = (Long) resultMap.get("amount");
+        
+        // 적립금 취소하면 기존에 사용한 적립금 원복하는게 아니라 새로 적립금 발급
+        emoneyRepository.save(
+                Emoney.builder()
+                        .userSeq(emoneyCancelDto.getUserSeq())
+                        .amount(amount)
+                        .usageAmount(0L)
+                        .remainAmount(amount)
+                        .content(emoneyCancelDto.getContent())
+                        .expirationDate(expirationDate)
+                        .build()
+        );
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.emoney.api;
 
+import com.emoney.domain.dto.EmoneyCancelDto;
 import com.emoney.domain.dto.EmoneyCreateDto;
 import com.emoney.domain.dto.EmoneyUsageDto;
 import com.emoney.domain.vo.EmoneyVo;
@@ -36,6 +37,13 @@ public class EmoneyController {
     @PatchMapping("/usage")
     public ResponseEntity<Void> useEmoney(@RequestBody @Valid EmoneyUsageDto emoneyUsageDto) {
         emoneyService.useEmoney(emoneyUsageDto);
+        return ResponseEntity.ok().build();
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @PatchMapping("/usage-cancel")
+    public ResponseEntity<Void> useCancelEmoney(@RequestBody @Valid EmoneyCancelDto emoneyCancelDto) {
+        emoneyService.useCancelEmoney(emoneyCancelDto);
         return ResponseEntity.ok().build();
     }
 }
