@@ -1,7 +1,7 @@
 package com.emoney.repository.impl;
 
 import com.emoney.domain.dto.EmoneyCancelDto;
-import com.emoney.domain.dto.EmoneyUsageDto;
+import com.emoney.domain.dto.EmoneyDeductDto;
 import com.emoney.domain.entity.Emoney;
 import com.emoney.repository.EmoneyRepositoryDsl;
 import com.querydsl.core.BooleanBuilder;
@@ -25,12 +25,12 @@ public class EmoneyRepositoryDslImpl implements EmoneyRepositoryDsl {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<Emoney> findAllUsableEmoneyList(EmoneyUsageDto emoneyUsageDto) {
+    public List<Emoney> findAllUsableEmoneyList(EmoneyDeductDto emoneyDeductDto) {
         BooleanBuilder builder = new BooleanBuilder();
         builder
-            .and(emoney.userSeq.eq(emoneyUsageDto.getUserSeq()))
+            .and(emoney.userSeq.eq(emoneyDeductDto.getUserSeq()))
             .and(emoney.remainAmount.gt(0L))
-            .and(emoney.expirationDate.goe(emoneyUsageDto.getSearchDateTime()))
+            .and(emoney.expirationDate.goe(emoneyDeductDto.getSearchDateTime()))
             .and(emoney.isApproved.eq(true));
 
         return jpaQueryFactory

@@ -4,7 +4,7 @@ import com.emoney.comm.DateTimeUtil;
 import com.emoney.domain.dto.EmoneyCancelDto;
 import com.emoney.domain.dto.EmoneyCreateDto;
 import com.emoney.domain.dto.EmoneyExtendDto;
-import com.emoney.domain.dto.EmoneyUsageDto;
+import com.emoney.domain.dto.EmoneyDeductDto;
 import com.emoney.domain.entity.Emoney;
 import com.emoney.domain.entity.EmoneyUsageHistory;
 import com.emoney.domain.mapper.EmoneyMapper;
@@ -47,80 +47,75 @@ public class EmoneyServiceImpl implements EmoneyService {
     }
 
     @Override
-    public void deductEmoney(Long emoneySeq) {
-
-    }
-
-    @Override
     @Transactional
-    public void useEmoney(EmoneyUsageDto emoneyUsageDto) {
-        // 1. 적립금 사용 요청 정보 세팅
-        Long userSeq = emoneyUsageDto.getUserSeq();
-        Long emoneyRequestAmount = emoneyUsageDto.getAmount();
+    public void deductEmoney(EmoneyDeductDto emoneyDeductDto) {
+        // 1. 적립금 사용/차감 요청 정보 세팅
+        Long userSeq = emoneyDeductDto.getUserSeq();
+        Long emoneyRequestAmount = emoneyDeductDto.getAmount();
         LocalDateTime localDateTime = DateTimeUtil.getLocalDateTime();
-        emoneyUsageDto.setSearchDateTime(localDateTime);
+        emoneyDeductDto.setSearchDateTime(localDateTime);
 
-        // 2. 사용 가능 적립금 조회(적립금 만료일이 빠른 순서대로 정렬)
-        List<Emoney> emoneyList = emoneyRepository.findAllUsableEmoneyList(emoneyUsageDto);
+        // 2. 사용/차감 가능 적립금 조회(적립금 만료일이 빠른 순서대로 정렬)
+        List<Emoney> emoneyList = emoneyRepository.findAllUsableEmoneyList(emoneyDeductDto);
 
-        // 3. 사용 요청한 적립금이 사용 가능 적립금 잔액 누적 적립금 보다 큰지 비교(적립금 잔액 검사)
+        // 3. 사용/차감 요청한 적립금이 사용/차감 가능 적립금 잔액 누적 적립금 보다 큰지 비교(적립금 잔액 검사)
         Long totalRemainAmount = emoneyList.stream()
                 .map(Emoney::getRemainAmount)
                 .reduce(0L, Long::sum);
-        
+
         if(emoneyRequestAmount > totalRemainAmount){
             throw new RuntimeException("사용 요청한 적립금이 사용 가능 잔액 누적 적립금 보다 커서 불가합니다.");
         }
 
-        // 4. 적립금 사용
+        // 4. 적립금 사용/차감
         for(Emoney emoney : emoneyList){
             Long emoneyRemainAmount = emoney.getRemainAmount();
 
             /**
-             * 4-1. 사용 요청한 적립금이 현재 잔액 적립금 보다 크면, 사용한 적립금을 현재 잔액 적립금으로 처리
+             * 4-1. 사용/차감 요청한 적립금이 현재 잔액 적립금 보다 크면, 사용한 적립금을 현재 잔액 적립금으로 처리
              *      반대로 작거나 같으면, 사용한 적립금을 사용 요청한 적립금으로 처리
              */
             Long emoneyUsageAmount = emoneyRequestAmount > emoneyRemainAmount ? emoneyRemainAmount : emoneyRequestAmount;
 
             /**
              * 4-2. 현재 적립금 정보 수정
-             *      현재 적립금의 사용한 적립금과 잔액 적립금 누적 갱신
+             *      현재 적립금의 사용/차감한 적립금과 잔액 적립금 누적 갱신
              */
             emoney.setUsageAmount(emoney.getUsageAmount() + emoneyUsageAmount);
             emoney.setRemainAmount(emoney.getRemainAmount() - emoneyUsageAmount);
             emoneyRepository.save(emoney);
-            
-            // 4-3. 적립금 사용내역 테이블 등록
+
+            // 4-3. 적립금 사용/차감 내역 테이블 등록
             emoneyUsageHistoryRepository.save(
                     EmoneyUsageHistory.builder()
-                            .usageTypeSeq(emoneyUsageDto.getUsageTypeSeq())
+                            .usageTypeSeq(emoneyDeductDto.getUsageTypeSeq())
                             .usageAmount(emoneyUsageAmount)
-                            .content(emoneyUsageDto.getContent())
+                            .content(emoneyDeductDto.getContent())
                             .creationDate(localDateTime)
                             .emoney(emoney)
                             .build()
             );
 
-            // 4-4. 사용 요청한 적립금 차감
+            // 4-4. 사용/차감 요청한 적립금 차감
             emoneyRequestAmount = emoneyRequestAmount - emoneyUsageAmount;
 
-            // 4-5. 사용 요청한 적립금 다 사용한 경우 루프 종료
+            // 4-5. 사용/차감 요청한 적립금 다 사용한 경우 루프 종료
             if(emoneyRequestAmount <= 0){
                 break;
             }
         }
 
-        // 5. 사용 요청한 적립금 정보 적립금 테이블 등록
+        // 5. 사용/차감 요청한 적립금 정보 적립금 테이블 등록
         emoneyRepository.save(
                 Emoney.builder()
                         .userSeq(userSeq)
-                        .orderSeq(emoneyUsageDto.getOrderSeq())
-                        .typeSeq(emoneyUsageDto.getUsageTypeSeq())
-                        .amount(emoneyUsageDto.getAmount())
-                        .usageAmount(emoneyUsageDto.getAmount())
+                        .orderSeq(emoneyDeductDto.getOrderSeq() == null ? 0L : emoneyDeductDto.getOrderSeq())   // 차감인 경우 0 입력
+                        .typeSeq(emoneyDeductDto.getUsageTypeSeq())
+                        .amount(emoneyDeductDto.getAmount())
+                        .usageAmount(emoneyDeductDto.getAmount())
                         .remainAmount(0L)
                         .isApproved(true)
-                        .content(emoneyUsageDto.getContent())
+                        .content(emoneyDeductDto.getContent())
                         .creationDate(localDateTime)
                         .build()
         );
@@ -132,7 +127,7 @@ public class EmoneyServiceImpl implements EmoneyService {
         Map<String, Object> resultMap = emoneyRepository.findCancellationEmoney(emoneyCancelDto);
         LocalDateTime expirationDate = (LocalDateTime) resultMap.get("expirationDate");
         Long amount = (Long) resultMap.get("amount");
-        
+
         // 적립금 취소하면 기존에 사용한 적립금 원복하는게 아니라 새로 적립금 발급
         emoneyRepository.save(
                 Emoney.builder()

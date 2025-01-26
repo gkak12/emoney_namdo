@@ -2,7 +2,7 @@ package com.emoney.api;
 
 import com.emoney.domain.dto.EmoneyCancelDto;
 import com.emoney.domain.dto.EmoneyCreateDto;
-import com.emoney.domain.dto.EmoneyUsageDto;
+import com.emoney.domain.dto.EmoneyDeductDto;
 import com.emoney.domain.vo.EmoneyVo;
 import com.emoney.service.EmoneyService;
 import jakarta.validation.Valid;
@@ -34,9 +34,9 @@ public class EmoneyController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @PatchMapping("/usage")
-    public ResponseEntity<Void> useEmoney(@RequestBody @Valid EmoneyUsageDto emoneyUsageDto) {
-        emoneyService.useEmoney(emoneyUsageDto);
+    @PatchMapping({"/usage", "/deduct"})
+    public ResponseEntity<Void> deductEmoney(@RequestBody @Valid EmoneyDeductDto emoneyDeductDto) {
+        emoneyService.deductEmoney(emoneyDeductDto);
         return ResponseEntity.ok().build();
     }
 

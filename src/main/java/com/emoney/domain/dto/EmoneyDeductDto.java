@@ -10,12 +10,11 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class EmoneyUsageDto {
+public class EmoneyDeductDto {
 
     @NotNull
     private Long userSeq;
 
-    @NotNull
     private Long orderSeq;
 
     @NotNull
