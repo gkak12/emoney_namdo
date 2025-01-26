@@ -109,8 +109,8 @@ public class EmoneyServiceImpl implements EmoneyService {
         emoneyRepository.save(
                 Emoney.builder()
                         .userSeq(userSeq)
-                        .orderSeq(emoneyDeductDto.getOrderSeq() == null ? 0L : emoneyDeductDto.getOrderSeq())   // 차감인 경우 0 입력
-                        .typeSeq(emoneyDeductDto.getUsageTypeSeq())
+                        .orderSeq(emoneyDeductDto.getOrderSeq())
+                        .typeSeq(emoneyDeductDto.getTypeSeq())
                         .amount(emoneyDeductDto.getAmount())
                         .usageAmount(emoneyDeductDto.getAmount())
                         .remainAmount(0L)
