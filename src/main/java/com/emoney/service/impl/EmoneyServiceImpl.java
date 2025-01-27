@@ -79,8 +79,7 @@ public class EmoneyServiceImpl implements EmoneyService {
              * 4-2. 현재 적립금 정보 수정
              *      현재 적립금의 사용/차감한 적립금과 잔액 적립금 누적 갱신
              */
-            emoney.setUsageAmount(emoney.getUsageAmount() + emoneyUsageAmount);
-            emoney.setRemainAmount(emoney.getRemainAmount() - emoneyUsageAmount);
+            emoney.deduct(emoneyUsageAmount);
             emoneyRepository.save(emoney);
 
             // 4-3. 적립금 사용/차감 내역 테이블 등록

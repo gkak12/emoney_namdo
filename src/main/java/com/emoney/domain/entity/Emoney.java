@@ -60,6 +60,11 @@ public class Emoney {
     @OneToMany(mappedBy = "emoney", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<EmoneyUsageHistory> usageHistory;
 
+    public void deduct(Long emoneyUsageAmount){
+        this.usageAmount = this.usageAmount + emoneyUsageAmount;
+        this.remainAmount = this.remainAmount - emoneyUsageAmount;
+    }
+
     public void approve(){
         this.isApproved = true;
         this.isExpired = false;
