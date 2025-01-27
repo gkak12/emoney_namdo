@@ -31,7 +31,8 @@ public class EmoneyRepositoryDslImpl implements EmoneyRepositoryDsl {
             .and(emoney.userSeq.eq(emoneyDeductDto.getUserSeq()))
             .and(emoney.remainAmount.gt(0L))
             .and(emoney.expirationDate.goe(emoneyDeductDto.getSearchDateTime()))
-            .and(emoney.isApproved.eq(true));
+            .and(emoney.isApproved.eq(true))
+            .and(emoney.isExpired.eq(false));
 
         return jpaQueryFactory
                 .select(emoney)
