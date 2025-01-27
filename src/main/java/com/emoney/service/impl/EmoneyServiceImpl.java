@@ -1,6 +1,8 @@
 package com.emoney.service.impl;
 
-import com.emoney.comm.DateTimeUtil;
+import com.emoney.comm.enums.EmoneyErrorEnums;
+import com.emoney.comm.exception.EmoneyException;
+import com.emoney.comm.util.DateTimeUtil;
 import com.emoney.domain.dto.EmoneyCancelDto;
 import com.emoney.domain.dto.EmoneyCreateDto;
 import com.emoney.domain.dto.EmoneyExtendDto;
@@ -152,8 +154,16 @@ public class EmoneyServiceImpl implements EmoneyService {
     }
 
     @Override
-    public void refuseEmoney(Long emoneySeq) {
+    @Transactional
+    public void rejectEmoney(Long emoneySeq) {
+        Emoney emoney = emoneyRepository.findById(emoneySeq).orElseThrow(() -> new EmoneyException(EmoneyErrorEnums.NOT_FOUND, "반려 대상 적립금 존재하지 않습니다."));
 
+        if(emoney.getIsApproved() == false){
+            throw new EmoneyException(EmoneyErrorEnums.BAD_REQUEST, "이미 반려된 적립금입니다.");
+        }
+
+        emoney.reject();
+        emoneyRepository.save(emoney);
     }
 
     @Override

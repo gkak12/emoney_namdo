@@ -15,7 +15,7 @@ public interface EmoneyService {
     void deductEmoney(EmoneyDeductDto emoneyDeductDto);         // 적립금 사용 및 차감
     void useCancelEmoney(EmoneyCancelDto emoneyCancelDto);      // 적립금 사용 취소
     void approveEmoney(Long emoneySeq);                         // 적립금 승인
-    void refuseEmoney(Long emoneySeq);                          // 적립금 반려
+    void rejectEmoney(Long emoneySeq);                          // 적립금 반려
     void extendEmoney(EmoneyExtendDto emoneyExtendDto);         // 적립금 연장
     void expireEmoney();                                        // 적립금 만료
 }

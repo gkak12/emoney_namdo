@@ -64,4 +64,8 @@ public class Emoney {
         this.isApproved = true;
         this.isExpired = false;
     }
+
+    public void reject(){
+        this.isApproved = false;
+    }
 }
