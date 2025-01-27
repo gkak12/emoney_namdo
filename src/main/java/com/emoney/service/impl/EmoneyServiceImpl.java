@@ -66,7 +66,7 @@ public class EmoneyServiceImpl implements EmoneyService {
                 .reduce(0L, Long::sum);
 
         if(emoneyRequestAmount > totalRemainAmount){
-            throw new RuntimeException("사용 요청한 적립금이 사용 가능 잔액 누적 적립금 보다 커서 불가합니다.");
+            throw new EmoneyException(EmoneyErrorEnums.BAD_REQUEST, "사용 요청한 적립금이 사용 가능 잔액 누적 적립금 보다 커서 불가합니다.");
         }
 
         // 4. 적립금 사용/차감
