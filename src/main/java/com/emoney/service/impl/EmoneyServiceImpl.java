@@ -5,8 +5,8 @@ import com.emoney.comm.exception.EmoneyException;
 import com.emoney.comm.util.DateTimeUtil;
 import com.emoney.domain.dto.EmoneyCancelDto;
 import com.emoney.domain.dto.EmoneyCreateDto;
-import com.emoney.domain.dto.EmoneyExtendDto;
 import com.emoney.domain.dto.EmoneyDeductDto;
+import com.emoney.domain.dto.EmoneyExtendDto;
 import com.emoney.domain.entity.Emoney;
 import com.emoney.domain.entity.EmoneyUsageHistory;
 import com.emoney.domain.mapper.EmoneyMapper;
@@ -57,21 +57,13 @@ public class EmoneyServiceImpl implements EmoneyService {
         LocalDateTime localDateTime = DateTimeUtil.getLocalDateTime();
         emoneyDeductDto.setSearchDateTime(localDateTime);
 
-        // 2. 사용/차감 가능 적립금 조회(적립금 만료일이 빠른 순서대로 정렬) 및 사용 가능 적립금 확인
+        // 2. 사용/차감 가능 적립금 조회(적립금 만료일이 빠른 순서대로 정렬) 및 사용/차감 가능 적립금 확인
         List<Emoney> emoneyList = emoneyRepository.findAllUsableEmoneyList(emoneyDeductDto);
-
-        if(emoneyList.isEmpty()){
-            throw new EmoneyException(EmoneyErrorEnums.INTERNAL_SERVER_ERROR, "사용 가능한 적립금이 없습니다.");
-        }
+        validateUsableEmoneyList(emoneyList, "사용 가능한 적립금이 없습니다.");
 
         // 3. 사용/차감 요청한 적립금이 사용/차감 가능 적립금 잔액 누적 적립금 보다 큰지 비교(적립금 잔액 검사)
-        Long totalRemainAmount = emoneyList.stream()
-                .map(Emoney::getRemainAmount)
-                .reduce(0L, Long::sum);
-
-        if(emoneyRequestAmount > totalRemainAmount){
-            throw new EmoneyException(EmoneyErrorEnums.BAD_REQUEST, "사용 요청한 적립금이 사용 가능 잔액 누적 적립금 보다 커서 불가합니다.");
-        }
+        Long totalRemainAmount = emoneyList.stream().map(Emoney::getRemainAmount).reduce(0L, Long::sum);
+        validateRequestEmoney(emoneyRequestAmount, totalRemainAmount, "사용 요청한 적립금이 사용 가능 잔액 누적 적립금 보다 커서 불가합니다.");
 
         // 4. 적립금 사용/차감
         for(Emoney emoney : emoneyList){
@@ -153,10 +145,7 @@ public class EmoneyServiceImpl implements EmoneyService {
     public void approveEmoney(Long emoneySeq) {
         Emoney emoney = emoneyRepository.findById(emoneySeq)
                 .orElseThrow(() -> new EmoneyException(EmoneyErrorEnums.NOT_FOUND, "승인 대상 적립금 존재하지 않습니다."));
-
-        if(emoney.getIsApproved()){
-            throw new EmoneyException(EmoneyErrorEnums.BAD_REQUEST, "이미 승인된 적립금입니다.");
-        }
+        validateApprovalStatus(emoney, "승인 대상 적립금은 이미 승인되었습니다.");
 
         emoney.approve();   // 승인 처리
         emoneyRepository.save(emoney);
@@ -167,10 +156,7 @@ public class EmoneyServiceImpl implements EmoneyService {
     public void rejectEmoney(Long emoneySeq) {
         Emoney emoney = emoneyRepository.findById(emoneySeq)
                 .orElseThrow(() -> new EmoneyException(EmoneyErrorEnums.NOT_FOUND, "반려 대상 적립금 존재하지 않습니다."));
-
-        if(!emoney.getIsApproved()){
-            throw new EmoneyException(EmoneyErrorEnums.BAD_REQUEST, "이미 반려된 적립금입니다.");
-        }
+        validateNotApprovalStatus(emoney, "반려 대상 적립금은 이미 반려되었습니다.");
 
         emoney.reject();    // 반려 처리
         emoneyRepository.save(emoney);
@@ -185,30 +171,12 @@ public class EmoneyServiceImpl implements EmoneyService {
                 .orElseThrow(() -> new EmoneyException(EmoneyErrorEnums.NOT_FOUND, "연장 대상 적립금 존재하지 않습니다."));
 
         String workName = "연장";
-        validateExpirationDate(emoney, expirationDateTime, workName);     // 만료일 체크
-        validateApprovalStatus(emoney, workName);                         // 승인 상태 체크
-        validateExpirationStatus(emoney, workName);                       // 만료 상태 체크
+        validateExpirationDate(emoney, expirationDateTime, workName.concat(" 대상 적립금 만료일이 요청한 만료일보다 이후입니다."));   // 만료일 체크
+        validateNotApprovalStatus(emoney, workName.concat(" 대상 적립금은 아직 승인되지 않았습니다."));                             // 반려 상태 체크
+        validateExpirationStatus(emoney, workName.concat(" 대상 적립금은 이미 만료되었습니다."));                                  // 만료 상태 체크
 
         emoney.extendExpirationTime(expirationDateTime);        // 만료일 연장
         emoneyRepository.save(emoney);
-    }
-
-    private void validateExpirationDate(Emoney emoney, LocalDateTime expirationDateTime, String workName) {
-        if (emoney.getExpirationDate().isAfter(expirationDateTime)) {
-            throw new EmoneyException(EmoneyErrorEnums.BAD_REQUEST, workName.concat(" 대상 적립금 만료일이 요청한 만료일보다 이후입니다."));
-        }
-    }
-
-    private void validateApprovalStatus(Emoney emoney, String workName) {
-        if (!emoney.getIsApproved()) {
-            throw new EmoneyException(EmoneyErrorEnums.BAD_REQUEST, workName.concat(" 대상 적립금은 아직 승인되지 않았습니다."));
-        }
-    }
-
-    private void validateExpirationStatus(Emoney emoney, String workName) {
-        if (emoney.getIsExpired()) {
-            throw new EmoneyException(EmoneyErrorEnums.BAD_REQUEST, workName.concat(" 대상 적립금은 이미 만료되었습니다."));
-        }
     }
 
     @Override
@@ -216,10 +184,45 @@ public class EmoneyServiceImpl implements EmoneyService {
     public void expireEmoney(Long emoneySeq) {
         Emoney emoney = emoneyRepository.findById(emoneySeq)
                 .orElseThrow(() -> new EmoneyException(EmoneyErrorEnums.NOT_FOUND, "만료 대상 적립금 존재하지 않습니다."));
-
-        validateExpirationStatus(emoney,"만료");      // 만료 상태 체크
+        validateExpirationStatus(emoney,"만료 대상 적립금은 이미 만료되었습니다.");      // 만료 상태 체크
 
         emoney.expire();    // 만료 처리
         emoneyRepository.save(emoney);
+    }
+
+    private void validateUsableEmoneyList(List<Emoney> emoneyList, String msg){
+        if(emoneyList.isEmpty()){
+            throw new EmoneyException(EmoneyErrorEnums.INTERNAL_SERVER_ERROR, msg);
+        }
+    }
+
+    private void validateRequestEmoney(Long emoneyRequestAmount, Long totalRemainAmount, String msg){
+        if(emoneyRequestAmount > totalRemainAmount){
+            throw new EmoneyException(EmoneyErrorEnums.BAD_REQUEST, msg);
+        }
+    }
+
+    private void validateExpirationDate(Emoney emoney, LocalDateTime expirationDateTime, String msg) {
+        if (emoney.getExpirationDate().isAfter(expirationDateTime)) {
+            throw new EmoneyException(EmoneyErrorEnums.BAD_REQUEST, msg);
+        }
+    }
+
+    private void validateApprovalStatus(Emoney emoney, String msg) {
+        if (emoney.getIsApproved()) {
+            throw new EmoneyException(EmoneyErrorEnums.BAD_REQUEST, msg);
+        }
+    }
+
+    private void validateNotApprovalStatus(Emoney emoney, String msg) {
+        if (!emoney.getIsApproved()) {
+            throw new EmoneyException(EmoneyErrorEnums.BAD_REQUEST, msg);
+        }
+    }
+
+    private void validateExpirationStatus(Emoney emoney, String msg) {
+        if (emoney.getIsExpired()) {
+            throw new EmoneyException(EmoneyErrorEnums.BAD_REQUEST, msg);
+        }
     }
 }
