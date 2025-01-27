@@ -57,8 +57,12 @@ public class EmoneyServiceImpl implements EmoneyService {
         LocalDateTime localDateTime = DateTimeUtil.getLocalDateTime();
         emoneyDeductDto.setSearchDateTime(localDateTime);
 
-        // 2. 사용/차감 가능 적립금 조회(적립금 만료일이 빠른 순서대로 정렬)
+        // 2. 사용/차감 가능 적립금 조회(적립금 만료일이 빠른 순서대로 정렬) 및 사용 가능 적립금 확인
         List<Emoney> emoneyList = emoneyRepository.findAllUsableEmoneyList(emoneyDeductDto);
+
+        if(emoneyList.isEmpty()){
+            throw new EmoneyException(EmoneyErrorEnums.INTERNAL_SERVER_ERROR, "사용 가능한 적립금이 없습니다.");
+        }
 
         // 3. 사용/차감 요청한 적립금이 사용/차감 가능 적립금 잔액 누적 적립금 보다 큰지 비교(적립금 잔액 검사)
         Long totalRemainAmount = emoneyList.stream()
