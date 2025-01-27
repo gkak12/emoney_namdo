@@ -17,5 +17,5 @@ public interface EmoneyService {
     void approveEmoney(Long emoneySeq);                         // 적립금 승인
     void rejectEmoney(Long emoneySeq);                          // 적립금 반려
     void extendEmoney(EmoneyExtendDto emoneyExtendDto);         // 적립금 연장
-    void expireEmoney();                                        // 적립금 만료
+    void expireEmoney(Long emoneySeq);                          // 적립금 만료
 }

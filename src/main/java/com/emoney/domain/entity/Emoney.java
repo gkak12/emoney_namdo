@@ -72,4 +72,8 @@ public class Emoney {
     public void extendExpirationTime(LocalDateTime expirationDate){
         this.expirationDate = expirationDate;
     }
+
+    public void expire(){
+        this.isExpired = true;
+    }
 }

@@ -76,4 +76,15 @@ public class EmoneyController {
         emoneyService.extendEmoney(emoneyExtendDto);
         return ResponseEntity.ok().build();
     }
+
+    @ResponseStatus(HttpStatus.OK)
+    @PatchMapping("/expire/{emoneySeq}")
+    public ResponseEntity<Void> expireEmoney(@PathVariable Long emoneySeq) {
+        if(emoneySeq == null || emoneySeq < 1) {
+            throw new IllegalArgumentException("잘못된 적립금 SEQ 입니다.");
+        }
+
+        emoneyService.expireEmoney(emoneySeq);
+        return ResponseEntity.ok().build();
+    }
 }
