@@ -61,9 +61,9 @@ public class EmoneyServiceImpl implements EmoneyService {
         List<Emoney> emoneyList = emoneyRepository.findAllUsableEmoneyList(emoneyDeductDto);
         validateUsableEmoneyList(emoneyList, "사용 가능한 적립금이 없습니다.");
 
-        // 3. 사용/차감 요청한 적립금이 사용/차감 가능 적립금 잔액 누적 적립금 보다 큰지 비교(적립금 잔액 검사)
+        // 3. 사용/차감 요청한 적립금이 사용/차감 가능 전체 적립금 보다 큰지 비교(적립금 잔액 검사)
         Long totalRemainAmount = emoneyList.stream().map(Emoney::getRemainAmount).reduce(0L, Long::sum);
-        validateRequestEmoney(emoneyRequestAmount, totalRemainAmount, "사용 요청한 적립금이 사용 가능 잔액 누적 적립금 보다 커서 불가합니다.");
+        validateRequestEmoney(emoneyRequestAmount, totalRemainAmount, "사용 요청한 적립금이 사용 가능 전체 적립금 보다 커서 불가합니다.");
 
         // 4. 적립금 사용/차감
         for(Emoney emoney : emoneyList){
@@ -197,12 +197,14 @@ public class EmoneyServiceImpl implements EmoneyService {
 
     private void validateRequestEmoney(Long emoneyRequestAmount, Long totalRemainAmount, String msg){
         if(emoneyRequestAmount > totalRemainAmount){
+            log.info("사용 요청 적립금: {0}, 사용 가능 전체 적립금: {1}", emoneyRequestAmount, totalRemainAmount);
             throw new EmoneyException(EmoneyErrorEnums.BAD_REQUEST, msg);
         }
     }
 
     private void validateExpirationDate(Emoney emoney, LocalDateTime expirationDateTime, String msg) {
         if (emoney.getExpirationDate().isAfter(expirationDateTime)) {
+            log.info("대상 적립금 만료일: {0}, 요청한 만료일: {1}", emoney.getExpirationDate(), expirationDateTime);
             throw new EmoneyException(EmoneyErrorEnums.BAD_REQUEST, msg);
         }
     }
