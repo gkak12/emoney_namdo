@@ -1,7 +1,9 @@
 package com.emoney.comm.exception;
 
 import com.emoney.comm.enums.EmoneyErrorEnums;
+import lombok.Getter;
 
+@Getter
 public class EmoneyException extends RuntimeException {
 
     private int statusCode;
