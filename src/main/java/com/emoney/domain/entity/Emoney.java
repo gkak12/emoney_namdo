@@ -59,4 +59,9 @@ public class Emoney {
     @JsonManagedReference
     @OneToMany(mappedBy = "emoney", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<EmoneyUsageHistory> usageHistory;
+
+    public void approve(){
+        this.isApproved = true;
+        this.isExpired = false;
+    }
 }

@@ -143,8 +143,12 @@ public class EmoneyServiceImpl implements EmoneyService {
     }
 
     @Override
+    @Transactional
     public void approveEmoney(Long emoneySeq) {
+        Emoney emoney = emoneyRepository.findById(emoneySeq).orElseThrow(() -> new NullPointerException("승인 대상 적립금 존재하지 않습니다."));
+        emoney.approve();
 
+        emoneyRepository.save(emoney);
     }
 
     @Override

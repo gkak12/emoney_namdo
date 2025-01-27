@@ -46,4 +46,15 @@ public class EmoneyController {
         emoneyService.useCancelEmoney(emoneyCancelDto);
         return ResponseEntity.ok().build();
     }
+
+    @ResponseStatus(HttpStatus.OK)
+    @PatchMapping("/approve/{emoneySeq}")
+    public ResponseEntity<Void> approveEmoney(@PathVariable Long emoneySeq) {
+        if(emoneySeq == null || emoneySeq < 1) {
+            throw new IllegalArgumentException("잘못된 적립금 SEQ 입니다.");
+        }
+
+        emoneyService.approveEmoney(emoneySeq);
+        return ResponseEntity.ok().build();
+    }
 }
