@@ -14,5 +14,6 @@ public class EmoneyVo {
     private String expirationDate;
     private String creationDate;
     private Boolean isApproved;
+    private Boolean isExpired;
     private String content;
 }

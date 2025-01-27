@@ -7,6 +7,7 @@ CREATE TABLE EMONEY(
     USAGE_AMOUNT BIGINT,                            -- 사용한 적립금
     REMAIN_AMOUNT BIGINT,                           -- 잔여 적립금
     IS_APPROVED BOOLEAN DEFAULT FALSE,              -- 승인여부
+    IS_EXPIRED BOOLEAN DEFAULT FALSE,               -- 만료여부
     CONTENT VARCHAR(100),                           -- 내용
     EXPIRATION_DATE TIMESTAMP,                      -- 만료일시
     CREATION_DATE TIMESTAMP                         -- 생성일시

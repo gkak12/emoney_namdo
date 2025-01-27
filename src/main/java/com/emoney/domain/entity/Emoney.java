@@ -44,6 +44,9 @@ public class Emoney {
     @Column(name = "IS_APPROVED")
     private Boolean isApproved;
 
+    @Column(name = "IS_EXPIRED")
+    private Boolean isExpired;
+
     @Column(name = "CONTENT")
     private String content;
 

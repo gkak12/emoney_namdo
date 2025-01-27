@@ -32,5 +32,8 @@ public class EmoneyCreateDto {
     @NotNull
     private Boolean isApproved;
 
+    @NotNull
+    private Boolean isExpired;
+
     private String content;
 }
