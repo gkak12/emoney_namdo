@@ -68,4 +68,8 @@ public class Emoney {
     public void reject(){
         this.isApproved = false;
     }
+
+    public void extendExpirationTime(LocalDateTime expirationDate){
+        this.expirationDate = expirationDate;
+    }
 }

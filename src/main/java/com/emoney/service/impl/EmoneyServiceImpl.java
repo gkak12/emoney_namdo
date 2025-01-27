@@ -130,7 +130,7 @@ public class EmoneyServiceImpl implements EmoneyService {
         LocalDateTime expirationDate = (LocalDateTime) resultMap.get("expirationDate");
         Long amount = (Long) resultMap.get("amount");
 
-        // 적립금 취소하면 기존에 사용한 적립금 원복하는게 아니라 새로 적립금 발급
+        // 적립금 취소하면 기존에 사용한 적립금 원복하는게 아니라 새로운 적립금 발급
         emoneyRepository.save(
                 Emoney.builder()
                         .userSeq(emoneyCancelDto.getUserSeq())
@@ -147,32 +147,63 @@ public class EmoneyServiceImpl implements EmoneyService {
     @Override
     @Transactional
     public void approveEmoney(Long emoneySeq) {
-        Emoney emoney = emoneyRepository.findById(emoneySeq).orElseThrow(() -> new EmoneyException(EmoneyErrorEnums.NOT_FOUND, "승인 대상 적립금 존재하지 않습니다."));
+        Emoney emoney = emoneyRepository.findById(emoneySeq)
+                .orElseThrow(() -> new EmoneyException(EmoneyErrorEnums.NOT_FOUND, "승인 대상 적립금 존재하지 않습니다."));
 
         if(emoney.getIsApproved()){
             throw new EmoneyException(EmoneyErrorEnums.BAD_REQUEST, "이미 승인된 적립금입니다.");
         }
 
-        emoney.approve();
+        emoney.approve();   // 승인 처리
         emoneyRepository.save(emoney);
     }
 
     @Override
     @Transactional
     public void rejectEmoney(Long emoneySeq) {
-        Emoney emoney = emoneyRepository.findById(emoneySeq).orElseThrow(() -> new EmoneyException(EmoneyErrorEnums.NOT_FOUND, "반려 대상 적립금 존재하지 않습니다."));
+        Emoney emoney = emoneyRepository.findById(emoneySeq)
+                .orElseThrow(() -> new EmoneyException(EmoneyErrorEnums.NOT_FOUND, "반려 대상 적립금 존재하지 않습니다."));
 
         if(!emoney.getIsApproved()){
             throw new EmoneyException(EmoneyErrorEnums.BAD_REQUEST, "이미 반려된 적립금입니다.");
         }
 
-        emoney.reject();
+        emoney.reject();    // 반려 처리
         emoneyRepository.save(emoney);
     }
 
     @Override
+    @Transactional
     public void extendEmoney(EmoneyExtendDto emoneyExtendDto) {
+        LocalDateTime expirationDateTime = emoneyExtendDto.getExpirationDateTime();
 
+        Emoney emoney = emoneyRepository.findById(emoneyExtendDto.getEmoneySeq())
+                .orElseThrow(() -> new EmoneyException(EmoneyErrorEnums.NOT_FOUND, "연장 대상 적립금 존재하지 않습니다."));
+
+        validateExpirationDate(emoney, expirationDateTime);     // 만료일 체크
+        validateApprovalStatus(emoney);                         // 승인 상태 체크
+        validateExpirationStatus(emoney);                       // 만료 상태 체크
+
+        emoney.extendExpirationTime(expirationDateTime);        // 만료일 연장
+        emoneyRepository.save(emoney);
+    }
+
+    private void validateExpirationDate(Emoney emoney, LocalDateTime expirationDateTime) {
+        if (emoney.getExpirationDate().isAfter(expirationDateTime)) {
+            throw new EmoneyException(EmoneyErrorEnums.BAD_REQUEST, "연장 대상 적립금 만료일이 요청한 만료일보다 이후입니다.");
+        }
+    }
+
+    private void validateApprovalStatus(Emoney emoney) {
+        if (!emoney.getIsApproved()) {
+            throw new EmoneyException(EmoneyErrorEnums.BAD_REQUEST, "연장 대상 적립금은 승인되지 않았습니다.");
+        }
+    }
+
+    private void validateExpirationStatus(Emoney emoney) {
+        if (emoney.getIsExpired()) {
+            throw new EmoneyException(EmoneyErrorEnums.BAD_REQUEST, "연장 대상 적립금은 만료되었습니다.");
+        }
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.emoney.api;
 import com.emoney.domain.dto.EmoneyCancelDto;
 import com.emoney.domain.dto.EmoneyCreateDto;
 import com.emoney.domain.dto.EmoneyDeductDto;
+import com.emoney.domain.dto.EmoneyExtendDto;
 import com.emoney.domain.vo.EmoneyVo;
 import com.emoney.service.EmoneyService;
 import jakarta.validation.Valid;
@@ -66,6 +67,13 @@ public class EmoneyController {
         }
 
         emoneyService.rejectEmoney(emoneySeq);
+        return ResponseEntity.ok().build();
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @PatchMapping("/extend")
+    public ResponseEntity<Void> extendEmoney(@RequestBody @Valid EmoneyExtendDto emoneyExtendDto) {
+        emoneyService.extendEmoney(emoneyExtendDto);
         return ResponseEntity.ok().build();
     }
 }

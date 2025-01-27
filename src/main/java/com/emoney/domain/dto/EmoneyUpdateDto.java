@@ -1,5 +1,6 @@
 package com.emoney.domain.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,7 +19,10 @@ public class EmoneyUpdateDto {
     private Long amount;
     private Long usedAmonut;
     private Long remainAmount;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime expirationDate;
+
     private Boolean isApproved;
     private String content;
 }
