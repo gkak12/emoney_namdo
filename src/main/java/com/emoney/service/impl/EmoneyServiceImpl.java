@@ -147,9 +147,13 @@ public class EmoneyServiceImpl implements EmoneyService {
     @Override
     @Transactional
     public void approveEmoney(Long emoneySeq) {
-        Emoney emoney = emoneyRepository.findById(emoneySeq).orElseThrow(() -> new NullPointerException("승인 대상 적립금 존재하지 않습니다."));
-        emoney.approve();
+        Emoney emoney = emoneyRepository.findById(emoneySeq).orElseThrow(() -> new EmoneyException(EmoneyErrorEnums.NOT_FOUND, "승인 대상 적립금 존재하지 않습니다."));
 
+        if(emoney.getIsApproved()){
+            throw new EmoneyException(EmoneyErrorEnums.BAD_REQUEST, "이미 승인된 적립금입니다.");
+        }
+
+        emoney.approve();
         emoneyRepository.save(emoney);
     }
 
@@ -158,7 +162,7 @@ public class EmoneyServiceImpl implements EmoneyService {
     public void rejectEmoney(Long emoneySeq) {
         Emoney emoney = emoneyRepository.findById(emoneySeq).orElseThrow(() -> new EmoneyException(EmoneyErrorEnums.NOT_FOUND, "반려 대상 적립금 존재하지 않습니다."));
 
-        if(emoney.getIsApproved() == false){
+        if(!emoney.getIsApproved()){
             throw new EmoneyException(EmoneyErrorEnums.BAD_REQUEST, "이미 반려된 적립금입니다.");
         }
 
