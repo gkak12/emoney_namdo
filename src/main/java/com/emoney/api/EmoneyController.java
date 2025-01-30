@@ -1,10 +1,8 @@
 package com.emoney.api;
 
 import com.emoney.comm.annotation.ValidEmoneySeq;
-import com.emoney.domain.dto.EmoneyCancelDto;
-import com.emoney.domain.dto.EmoneyCreateDto;
-import com.emoney.domain.dto.EmoneyDeductDto;
-import com.emoney.domain.dto.EmoneyExtendDto;
+import com.emoney.domain.dto.*;
+import com.emoney.domain.vo.EmoneyListVo;
 import com.emoney.domain.vo.EmoneyVo;
 import com.emoney.service.EmoneyService;
 import jakarta.validation.Valid;
@@ -26,6 +24,12 @@ public class EmoneyController {
     @GetMapping
     public ResponseEntity<List<EmoneyVo>> findAllEmoneys() {
         return ResponseEntity.ok(emoneyService.findAllEmoneys());
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("page")
+    public ResponseEntity<EmoneyListVo> findPageEmoneys(@RequestBody EmoneySearchDto emoneySearchDto) {
+        return ResponseEntity.ok(emoneyService.findPageEmoneys(emoneySearchDto));
     }
 
     @ResponseStatus(HttpStatus.OK)

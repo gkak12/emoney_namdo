@@ -3,8 +3,9 @@ package com.emoney.domain.vo;
 import lombok.Data;
 
 @Data
-public class EmoneyVo {
+public class EmoneyVo extends PageVo{
 
+    private Long emoneySeq;
     private Long userSeq;
     private Long orderSeq;
     private Long typeSeq;

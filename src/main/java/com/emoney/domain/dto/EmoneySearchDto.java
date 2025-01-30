@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -17,12 +19,13 @@ public class EmoneySearchDto extends PageDto {
 
     // 적립금 금액 검색 타입(amount, usageAmount, remainAmount)
     private String searchAmountType;
-    private Long searchAmountVal;
+    private Long searchStartAmountVal;
+    private Long searchEndAmountVal;
 
     // 적립금 시간 검색 타입(expirationDate, creationDate)
     private String searchDateType;
-    private String searchStartDate;
-    private String searchEndDate;
+    private LocalDate searchStartDate;
+    private LocalDate searchEndDate;
 
     // 적립금 여부 검색 타입(isApproved, isExpired)
     private String searchStatusType;

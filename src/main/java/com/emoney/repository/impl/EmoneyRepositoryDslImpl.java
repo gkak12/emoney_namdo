@@ -1,19 +1,27 @@
 package com.emoney.repository.impl;
 
+import com.emoney.comm.util.ConditionBuilderUtil;
 import com.emoney.domain.dto.EmoneyCancelDto;
 import com.emoney.domain.dto.EmoneyDeductDto;
+import com.emoney.domain.dto.EmoneySearchDto;
 import com.emoney.domain.entity.Emoney;
 import com.emoney.repository.EmoneyRepositoryDsl;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static com.emoney.domain.entity.QEmoney.emoney;
 
@@ -23,6 +31,71 @@ import static com.emoney.domain.entity.QEmoney.emoney;
 public class EmoneyRepositoryDslImpl implements EmoneyRepositoryDsl {
 
     private final JPAQueryFactory jpaQueryFactory;
+
+    @Override
+    public Page<Emoney> findEmoneyPaging(EmoneySearchDto searchDto) {
+        Pageable pageable = PageRequest.of(
+                searchDto.getPageNumber(),
+                searchDto.getPageSize()
+        );
+
+        BooleanBuilder builder = new BooleanBuilder();
+        builder
+            .and(ConditionBuilderUtil.buildEquals(emoney.emoneySeq, searchDto.getEmoneySeq()))
+            .and(ConditionBuilderUtil.buildEquals(emoney.userSeq, searchDto.getUserSeq()))
+            .and(ConditionBuilderUtil.buildEquals(emoney.orderSeq, searchDto.getOrderSeq()))
+            .and(ConditionBuilderUtil.buildEquals(emoney.typeSeq, searchDto.getTypeSeq()))
+            .and(ConditionBuilderUtil.buildStringLike(emoney.content, searchDto.getContent()));
+
+        String amountType = searchDto.getSearchAmountType();
+        Long startAmount = searchDto.getSearchStartAmountVal();
+        Long endAmount = searchDto.getSearchEndAmountVal();
+
+        if("amount".equals(amountType)){
+            builder.and(ConditionBuilderUtil.buildAmountBetween(emoney.amount, startAmount, endAmount));
+        } else if("usageAmount".equals(amountType)){
+            builder.and(ConditionBuilderUtil.buildAmountBetween(emoney.usageAmount, startAmount, endAmount));
+        } else if("remainAmount".equals(amountType)){
+            builder.and(ConditionBuilderUtil.buildAmountBetween(emoney.remainAmount, startAmount, endAmount));
+        }
+
+        String dateType = searchDto.getSearchDateType();
+        LocalDate startDate = searchDto.getSearchStartDate();
+        LocalDate endDate = searchDto.getSearchEndDate();
+
+        if("expirationDate".equals(dateType)){
+            builder.and(ConditionBuilderUtil.buildDateBetween(emoney.expirationDate, startDate, endDate));
+        } else if("creationDate".equals(dateType)){
+            builder.and(ConditionBuilderUtil.buildDateBetween(emoney.creationDate, startDate, endDate));
+        }
+
+        String statusType = searchDto.getSearchStatusType();
+        Boolean status = searchDto.getSearchStatusVal();
+
+        if("isApproved".equals(statusType)){
+            builder.and(ConditionBuilderUtil.buildEquals(emoney.isApproved, status));
+        } else if("isExpired".equals(statusType)){
+            builder.and(ConditionBuilderUtil.buildEquals(emoney.isExpired, status));
+        }
+
+        List<Emoney> list = jpaQueryFactory
+                .select(emoney)
+                .from(emoney)
+                .where(builder)
+                .offset(searchDto.getPageOffset())
+                .limit(searchDto.getPageSize())
+                .fetch();
+
+        Long count = Optional.ofNullable(
+                jpaQueryFactory
+                .select(emoney.count().as("count"))
+                .from(emoney)
+                .where(builder)
+                .fetchOne()
+        ).orElse(0L);
+
+        return new PageImpl<>(list, pageable, count);
+    }
 
     @Override
     public List<Emoney> findAllUsableEmoneyList(EmoneyDeductDto emoneyDeductDto) {

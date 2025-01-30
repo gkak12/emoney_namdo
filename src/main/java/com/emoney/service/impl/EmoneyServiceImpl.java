@@ -3,19 +3,19 @@ package com.emoney.service.impl;
 import com.emoney.comm.enums.EmoneyErrorEnums;
 import com.emoney.comm.exception.EmoneyException;
 import com.emoney.comm.util.DateTimeUtil;
-import com.emoney.domain.dto.EmoneyCancelDto;
-import com.emoney.domain.dto.EmoneyCreateDto;
-import com.emoney.domain.dto.EmoneyDeductDto;
-import com.emoney.domain.dto.EmoneyExtendDto;
+import com.emoney.domain.dto.*;
 import com.emoney.domain.entity.Emoney;
 import com.emoney.domain.entity.EmoneyUsageHistory;
 import com.emoney.domain.mapper.EmoneyMapper;
+import com.emoney.domain.vo.EmoneyListVo;
 import com.emoney.domain.vo.EmoneyVo;
+import com.emoney.domain.vo.PageVo;
 import com.emoney.repository.EmoneyRepository;
 import com.emoney.repository.EmoneyUsageHistoryRepository;
 import com.emoney.service.EmoneyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,6 +39,21 @@ public class EmoneyServiceImpl implements EmoneyService {
         return emoneyRepository.findAll().stream()
                 .map(emoneyMapper::toVo)
                 .toList();
+    }
+
+    @Override
+    public EmoneyListVo findPageEmoneys(EmoneySearchDto emoneySearchDto) {
+        Page<Emoney> page = emoneyRepository.findEmoneyPaging(emoneySearchDto);
+        PageVo pageVo = new PageVo(page.getTotalPages(), page.getTotalElements());
+        List<EmoneyVo> list = page.get().toList().stream()
+            .map(emoneyMapper::toVo)
+            .toList();
+
+        EmoneyListVo emoneyListVo = new EmoneyListVo();
+        emoneyListVo.setPage(pageVo);
+        emoneyListVo.setList(list);
+
+        return emoneyListVo;
     }
 
     @Override
