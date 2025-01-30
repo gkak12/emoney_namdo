@@ -1,5 +1,6 @@
 package com.emoney.repository.impl;
 
+import com.emoney.comm.enums.EmoneySearchEnums;
 import com.emoney.comm.util.ConditionBuilderUtil;
 import com.emoney.domain.dto.EmoneyCancelDto;
 import com.emoney.domain.dto.EmoneyDeductDto;
@@ -51,11 +52,11 @@ public class EmoneyRepositoryDslImpl implements EmoneyRepositoryDsl {
         Long startAmount = searchDto.getSearchStartAmountVal();
         Long endAmount = searchDto.getSearchEndAmountVal();
 
-        if("amount".equals(amountType)){
+        if(EmoneySearchEnums.AMOUNT.getVal().equals(amountType)){
             builder.and(ConditionBuilderUtil.buildAmountBetween(emoney.amount, startAmount, endAmount));
-        } else if("usageAmount".equals(amountType)){
+        } else if(EmoneySearchEnums.USAGE_AMOUNT.getVal().equals(amountType)){
             builder.and(ConditionBuilderUtil.buildAmountBetween(emoney.usageAmount, startAmount, endAmount));
-        } else if("remainAmount".equals(amountType)){
+        } else if(EmoneySearchEnums.REMAIN_AMOUNT.getVal().equals(amountType)){
             builder.and(ConditionBuilderUtil.buildAmountBetween(emoney.remainAmount, startAmount, endAmount));
         }
 
@@ -63,18 +64,18 @@ public class EmoneyRepositoryDslImpl implements EmoneyRepositoryDsl {
         LocalDate startDate = searchDto.getSearchStartDate();
         LocalDate endDate = searchDto.getSearchEndDate();
 
-        if("expirationDate".equals(dateType)){
+        if(EmoneySearchEnums.EXPIRATION_DATE.getVal().equals(dateType)){
             builder.and(ConditionBuilderUtil.buildDateBetween(emoney.expirationDate, startDate, endDate));
-        } else if("creationDate".equals(dateType)){
+        } else if(EmoneySearchEnums.CREATION_DATE.getVal().equals(dateType)){
             builder.and(ConditionBuilderUtil.buildDateBetween(emoney.creationDate, startDate, endDate));
         }
 
         String statusType = searchDto.getSearchStatusType();
         Boolean status = searchDto.getSearchStatusVal();
 
-        if("isApproved".equals(statusType)){
+        if(EmoneySearchEnums.IS_APPROVED.getVal().equals(statusType)){
             builder.and(ConditionBuilderUtil.buildEquals(emoney.isApproved, status));
-        } else if("isExpired".equals(statusType)){
+        } else if(EmoneySearchEnums.IS_EXPIRED.getVal().equals(statusType)){
             builder.and(ConditionBuilderUtil.buildEquals(emoney.isExpired, status));
         }
 
@@ -137,8 +138,8 @@ public class EmoneyRepositoryDslImpl implements EmoneyRepositoryDsl {
                 .fetchOne();
 
         Map<String, Object> resultMap = new HashMap<>();
-        resultMap.put("expirationDate", expirationDate);
-        resultMap.put("amount", amount);
+        resultMap.put(EmoneySearchEnums.EXPIRATION_DATE.getVal(), expirationDate);
+        resultMap.put(EmoneySearchEnums.AMOUNT.getVal(), amount);
 
         return resultMap;
     }
