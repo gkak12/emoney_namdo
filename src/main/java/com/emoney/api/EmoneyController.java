@@ -2,6 +2,7 @@ package com.emoney.api;
 
 import com.emoney.comm.annotation.ValidEmoneySeq;
 import com.emoney.domain.dto.*;
+import com.emoney.domain.vo.EmoneyDetailVo;
 import com.emoney.domain.vo.EmoneyListVo;
 import com.emoney.domain.vo.EmoneyVo;
 import com.emoney.service.EmoneyService;
@@ -27,9 +28,15 @@ public class EmoneyController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("page")
+    @GetMapping("/page")
     public ResponseEntity<EmoneyListVo> findPageEmoneys(@RequestBody EmoneySearchDto emoneySearchDto) {
         return ResponseEntity.ok(emoneyService.findPageEmoneys(emoneySearchDto));
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/detail/{emoneySeq}")
+    public ResponseEntity<EmoneyDetailVo> findEmoneyDetail(@PathVariable @Valid @ValidEmoneySeq Long emoneySeq) {
+        return ResponseEntity.ok(emoneyService.findEmoneyDetail(emoneySeq));
     }
 
     @ResponseStatus(HttpStatus.OK)

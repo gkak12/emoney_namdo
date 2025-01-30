@@ -7,9 +7,8 @@ import com.emoney.domain.dto.*;
 import com.emoney.domain.entity.Emoney;
 import com.emoney.domain.entity.EmoneyUsageHistory;
 import com.emoney.domain.mapper.EmoneyMapper;
-import com.emoney.domain.vo.EmoneyListVo;
-import com.emoney.domain.vo.EmoneyVo;
-import com.emoney.domain.vo.PageVo;
+import com.emoney.domain.mapper.EmoneyUsageHistoryMapper;
+import com.emoney.domain.vo.*;
 import com.emoney.repository.EmoneyRepository;
 import com.emoney.repository.EmoneyUsageHistoryRepository;
 import com.emoney.service.EmoneyService;
@@ -30,6 +29,7 @@ import java.util.Map;
 public class EmoneyServiceImpl implements EmoneyService {
 
     private final EmoneyMapper emoneyMapper;
+    private final EmoneyUsageHistoryMapper emoneyUsageHistoryMapper;
 
     private final EmoneyRepository emoneyRepository;
     private final EmoneyUsageHistoryRepository emoneyUsageHistoryRepository;
@@ -57,6 +57,23 @@ public class EmoneyServiceImpl implements EmoneyService {
         return EmoneyListVo.builder()
                 .page(pageVo)
                 .list(list)
+                .build();
+    }
+
+    @Override
+    public EmoneyDetailVo findEmoneyDetail(Long emoneySeq) {
+        Emoney emoney = emoneyRepository.findById(emoneySeq)
+                .orElseThrow(() -> new EmoneyException(EmoneyErrorEnums.NOT_FOUND, "상세 조회 대상 적립금 존재하지 않습니다."));
+        EmoneyVo emoneyVo = emoneyMapper.toVo(emoney);
+
+        List<EmoneyUsageHistory> emoneyUsageHistoryList = emoney.getUsageHistory();
+        List<EmoneyUsageHistoryVo> emoneyUsageHistoryVoList = emoneyUsageHistoryList.stream()
+                .map(emoneyUsageHistoryMapper::toVo)
+                .toList();
+
+        return EmoneyDetailVo.builder()
+                .emoneyVo(emoneyVo)
+                .emoneyUsageHistoryVoList(emoneyUsageHistoryVoList)
                 .build();
     }
 
