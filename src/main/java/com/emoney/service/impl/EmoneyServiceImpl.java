@@ -44,16 +44,20 @@ public class EmoneyServiceImpl implements EmoneyService {
     @Override
     public EmoneyListVo findPageEmoneys(EmoneySearchDto emoneySearchDto) {
         Page<Emoney> page = emoneyRepository.findEmoneyPaging(emoneySearchDto);
-        PageVo pageVo = new PageVo(page.getTotalPages(), page.getTotalElements());
+
+        PageVo pageVo = PageVo.builder()
+                .totalPages(page.getTotalPages())
+                .totalItems(page.getTotalElements())
+                .build();
+
         List<EmoneyVo> list = page.get().toList().stream()
             .map(emoneyMapper::toVo)
             .toList();
 
-        EmoneyListVo emoneyListVo = new EmoneyListVo();
-        emoneyListVo.setPage(pageVo);
-        emoneyListVo.setList(list);
-
-        return emoneyListVo;
+        return EmoneyListVo.builder()
+                .page(pageVo)
+                .list(list)
+                .build();
     }
 
     @Override

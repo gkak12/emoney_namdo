@@ -1,9 +1,11 @@
 package com.emoney.domain.vo;
 
+import lombok.Builder;
 import lombok.Data;
 
 @Data
-public class EmoneyVo extends PageVo{
+@Builder
+public class EmoneyVo{
 
     private Long emoneySeq;
     private Long userSeq;
