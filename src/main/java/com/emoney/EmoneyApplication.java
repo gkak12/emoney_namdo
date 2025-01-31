@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @Slf4j
 @SpringBootApplication(scanBasePackages = "com.emoney")
-public class MainApplication {
+public class EmoneyApplication {
     public static void main(String[] args) {
-        SpringApplication.run(MainApplication.class, args);
+        SpringApplication.run(EmoneyApplication.class, args);
     }
 }
