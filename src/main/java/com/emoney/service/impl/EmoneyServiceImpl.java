@@ -16,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -25,7 +24,6 @@ import java.util.Map;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class EmoneyServiceImpl implements EmoneyService {
 
     private final EmoneyMapper emoneyMapper;
@@ -78,14 +76,12 @@ public class EmoneyServiceImpl implements EmoneyService {
     }
 
     @Override
-    @Transactional
     public void createEmoney(EmoneyCreateDto emoneyCreateDto) {
         Emoney emoney = emoneyMapper.toCreateEntity(emoneyCreateDto);
         emoneyRepository.save(emoney);
     }
 
     @Override
-    @Transactional
     public void deductEmoney(EmoneyDeductDto emoneyDeductDto) {
         // 1. 적립금 사용/차감 요청 정보 세팅
         Long userSeq = emoneyDeductDto.getUserSeq();
@@ -155,7 +151,6 @@ public class EmoneyServiceImpl implements EmoneyService {
     }
 
     @Override
-    @Transactional
     public void useCancelEmoney(EmoneyCancelDto emoneyCancelDto) {
         Map<String, Object> resultMap = emoneyRepository.findCancellationEmoney(emoneyCancelDto);
         LocalDateTime expirationDate = (LocalDateTime) resultMap.get("expirationDate");
@@ -176,7 +171,6 @@ public class EmoneyServiceImpl implements EmoneyService {
     }
 
     @Override
-    @Transactional
     public void approveEmoney(Long emoneySeq) {
         Emoney emoney = emoneyRepository.findById(emoneySeq)
                 .orElseThrow(() -> new EmoneyException(EmoneyErrorEnums.NOT_FOUND, "승인 대상 적립금 존재하지 않습니다."));
@@ -187,7 +181,6 @@ public class EmoneyServiceImpl implements EmoneyService {
     }
 
     @Override
-    @Transactional
     public void rejectEmoney(Long emoneySeq) {
         Emoney emoney = emoneyRepository.findById(emoneySeq)
                 .orElseThrow(() -> new EmoneyException(EmoneyErrorEnums.NOT_FOUND, "반려 대상 적립금 존재하지 않습니다."));
@@ -198,7 +191,6 @@ public class EmoneyServiceImpl implements EmoneyService {
     }
 
     @Override
-    @Transactional
     public void extendEmoney(EmoneyExtendDto emoneyExtendDto) {
         LocalDateTime expirationDateTime = emoneyExtendDto.getExpirationDateTime();
 
@@ -215,7 +207,6 @@ public class EmoneyServiceImpl implements EmoneyService {
     }
 
     @Override
-    @Transactional
     public void expireEmoney(Long emoneySeq) {
         Emoney emoney = emoneyRepository.findById(emoneySeq)
                 .orElseThrow(() -> new EmoneyException(EmoneyErrorEnums.NOT_FOUND, "만료 대상 적립금 존재하지 않습니다."));
