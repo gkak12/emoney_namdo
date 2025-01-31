@@ -12,7 +12,7 @@ public interface EmoneyService {
     List<EmoneyVo> findAllEmoneys();                                    // 적립금 전체 조회
     EmoneyListVo findPageEmoneys(EmoneySearchDto emoneySearchDto);      // 적립금 페이징 조회
     EmoneyDetailVo findEmoneyDetail(Long emoneySeq);                    // 적립금 상세 조회
-    void createEmoney(EmoneyCreateDto emoneyCreateDto);                 // 적립금 지금
+    void createEmoney(EmoneyCreateDto emoneyCreateDto);                 // 적립금 지급
     void deductEmoney(EmoneyDeductDto emoneyDeductDto);                 // 적립금 사용 및 차감
     void useCancelEmoney(EmoneyCancelDto emoneyCancelDto);              // 적립금 사용 취소
     void approveEmoney(Long emoneySeq);                                 // 적립금 승인
