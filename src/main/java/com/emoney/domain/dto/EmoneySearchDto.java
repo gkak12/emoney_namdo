@@ -1,14 +1,14 @@
 package com.emoney.domain.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 public class EmoneySearchDto extends PageDto {
 
     private Long emoneySeq;
@@ -31,3 +31,6 @@ public class EmoneySearchDto extends PageDto {
     private String searchStatusType;
     private Boolean searchStatusVal;
 }
+
+
+
