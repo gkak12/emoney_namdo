@@ -23,7 +23,35 @@ public class EmoneyServiceImplTest {
     private EmoneyUsageHistoryRepository emoneyUsageHistoryRepository;
 
     @Test
-    void deductEmoney_적립금_사용_차감_테스트() {
+    void deductEmoney_적립금_사용_차감_잔액_확인_테스트() {
+        // Given
+        Boolean expectationBoolean = false;
+        Long emoneyRequestAmount = 500L;
+
+        Emoney emoney1 = Emoney.builder()
+                .amount(500L)
+                .usageAmount(200L)
+                .remainAmount(300L)
+                .build();
+
+        Emoney emoney2 = Emoney.builder()
+                .amount(300L)
+                .usageAmount(0L)
+                .remainAmount(300L)
+                .build();
+
+        List<Emoney> emoneyList = Arrays.asList(emoney1, emoney2);
+
+        // When
+        Long totalRemainAmount = emoneyList.stream().map(Emoney::getRemainAmount).reduce(0L, Long::sum);
+        Boolean resultBoolean = emoneyRequestAmount > totalRemainAmount ? true : false;
+
+        // Then
+        assertEquals(expectationBoolean, resultBoolean);
+    }
+
+    @Test
+    void deductEmoney_적립금_사용_차감_성공_테스트() {
         // Given
         Long expectationRemainAmount = 100L;
         Long emoneyRequestAmount = 500L;
