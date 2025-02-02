@@ -11,5 +11,5 @@ public class EmoneyUsageHistoryVo {
     private Long usageTypeSeq;
     private Long usageAmount;
     private String content;
-    private String creationDate;
+    private String creationDateTime;
 }

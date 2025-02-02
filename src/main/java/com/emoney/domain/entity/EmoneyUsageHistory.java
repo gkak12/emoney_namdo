@@ -31,8 +31,8 @@ public class EmoneyUsageHistory {
     @Column(name = "CONTENT")
     private String content;
 
-    @Column(name = "CREATION_DATE")
-    private LocalDateTime creationDate;
+    @Column(name = "CREATION_DATE_TIME")
+    private LocalDateTime creationDateTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "EMONEY_SEQ")

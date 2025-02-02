@@ -50,11 +50,11 @@ public class Emoney {
     @Column(name = "CONTENT")
     private String content;
 
-    @Column(name = "EXPIRATION_DATE")
-    private LocalDateTime expirationDate;
+    @Column(name = "EXPIRATION_DATE_TIME")
+    private LocalDateTime expirationDateTime;
 
-    @Column(name = "CREATION_DATE")
-    private LocalDateTime creationDate;
+    @Column(name = "CREATION_DATE_TIME")
+    private LocalDateTime creationDateTime;
 
     @JsonManagedReference
     @OneToMany(mappedBy = "emoney", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -74,8 +74,8 @@ public class Emoney {
         this.isApproved = false;
     }
 
-    public void extendExpirationTime(LocalDateTime expirationDate){
-        this.expirationDate = expirationDate;
+    public void extendExpirationTime(LocalDateTime expirationDateTime){
+        this.expirationDateTime = expirationDateTime;
     }
 
     public void expire(){

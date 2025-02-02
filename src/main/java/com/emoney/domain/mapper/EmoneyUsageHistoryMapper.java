@@ -13,6 +13,6 @@ import org.mapstruct.*;
 )
 public interface EmoneyUsageHistoryMapper {
 
-    @Mapping(source = "creationDate", target = "creationDate", dateFormat = "yyyy-MM-dd HH:mm:ss")
+    @Mapping(source = "creationDateTime", target = "creationDateTime", dateFormat = "yyyy-MM-dd HH:mm:ss")
     EmoneyUsageHistoryVo toVo(EmoneyUsageHistory emoneyUsageHistory);
 }

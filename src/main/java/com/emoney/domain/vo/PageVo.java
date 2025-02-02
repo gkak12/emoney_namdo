@@ -8,5 +8,5 @@ import lombok.Data;
 public class PageVo {
 
     private int totalPages;     // 전체 페이지 수
-    private long totalItems;     // 전체 항목 수
+    private long totalItems;    // 전체 항목 수
 }

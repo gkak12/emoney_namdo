@@ -18,8 +18,8 @@ import java.time.format.DateTimeFormatter;
 )
 public interface EmoneyMapper {
 
-    @Mapping(source = "expirationDate", target = "expirationDate", qualifiedByName = "setLocalDateTimeToString")
-    @Mapping(source = "creationDate", target = "creationDate", qualifiedByName = "setLocalDateTimeToString")
+    @Mapping(source = "expirationDateTime", target = "expirationDateTime", qualifiedByName = "setLocalDateTimeToString")
+    @Mapping(source = "creationDateTime", target = "creationDateTime", qualifiedByName = "setLocalDateTimeToString")
     EmoneyVo toVo(Emoney emoney);
 
     @Named("setLocalDateTimeToString")
@@ -30,13 +30,13 @@ public interface EmoneyMapper {
 
     @Mapping(target = "usageAmount", ignore = true)
     @Mapping(target = "remainAmount", ignore = true)
-    @Mapping(target = "creationDate", ignore = true)
+    @Mapping(target = "creationDateTime", ignore = true)
     Emoney toCreateEntity(EmoneyCreateDto emoneyCreateDto);
 
     @AfterMapping
     default void setAdditionalFields(EmoneyCreateDto emoneyCreateDto, @MappingTarget Emoney emoney) {
         emoney.setUsageAmount(0L);
         emoney.setRemainAmount(emoneyCreateDto.getAmount());
-        emoney.setCreationDate(DateTimeUtil.getLocalDateTime());
+        emoney.setCreationDateTime(DateTimeUtil.getLocalDateTime());
     }
 }
