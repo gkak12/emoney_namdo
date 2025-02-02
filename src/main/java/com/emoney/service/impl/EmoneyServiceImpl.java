@@ -120,7 +120,7 @@ public class EmoneyServiceImpl implements EmoneyService {
                             .usageTypeSeq(emoneyDeductDto.getUsageTypeSeq())
                             .usageAmount(emoneyUsageAmount)
                             .content(emoneyDeductDto.getContent())
-                            .creationDate(localDateTime)
+                            .creationDateTime(localDateTime)
                             .emoney(emoney)
                             .build()
             );
@@ -145,7 +145,7 @@ public class EmoneyServiceImpl implements EmoneyService {
                         .remainAmount(0L)
                         .isApproved(true)
                         .content(emoneyDeductDto.getContent())
-                        .creationDate(localDateTime)
+                        .creationDateTime(localDateTime)
                         .build()
         );
     }
@@ -153,7 +153,7 @@ public class EmoneyServiceImpl implements EmoneyService {
     @Override
     public void useCancelEmoney(EmoneyCancelDto emoneyCancelDto) {
         Map<String, Object> resultMap = emoneyRepository.findCancellationEmoney(emoneyCancelDto);
-        LocalDateTime expirationDate = (LocalDateTime) resultMap.get("expirationDate");
+        LocalDateTime expirationDateTime = (LocalDateTime) resultMap.get("expirationDate");
         Long amount = (Long) resultMap.get("amount");
 
         // 적립금 취소하면 기존에 사용한 적립금 원복하는게 아니라 새로운 적립금 발급
@@ -164,8 +164,8 @@ public class EmoneyServiceImpl implements EmoneyService {
                         .usageAmount(0L)
                         .remainAmount(amount)
                         .content(emoneyCancelDto.getContent())
-                        .expirationDate(expirationDate)
-                        .creationDate(DateTimeUtil.getLocalDateTime())
+                        .expirationDateTime(expirationDateTime)
+                        .creationDateTime(DateTimeUtil.getLocalDateTime())
                         .build()
         );
     }
@@ -230,8 +230,8 @@ public class EmoneyServiceImpl implements EmoneyService {
     }
 
     private void validateExpirationDate(Emoney emoney, LocalDateTime expirationDateTime, String msg) {
-        if (emoney.getExpirationDate().isAfter(expirationDateTime)) {
-            log.info("대상 적립금 만료일: {0}, 요청한 만료일: {1}", emoney.getExpirationDate(), expirationDateTime);
+        if (emoney.getExpirationDateTime().isAfter(expirationDateTime)) {
+            log.info("대상 적립금 만료일: {0}, 요청한 만료일: {1}", emoney.getExpirationDateTime(), expirationDateTime);
             throw new EmoneyException(EmoneyErrorEnums.BAD_REQUEST, msg);
         }
     }

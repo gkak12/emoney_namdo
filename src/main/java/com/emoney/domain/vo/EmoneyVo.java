@@ -14,8 +14,8 @@ public class EmoneyVo{
     private Long amount;
     private Long usageAmount;
     private Long remainAmount;
-    private String expirationDate;
-    private String creationDate;
+    private String expirationDateTime;
+    private String creationDateTime;
     private Boolean isApproved;
     private Boolean isExpired;
     private String content;

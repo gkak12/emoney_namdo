@@ -65,9 +65,9 @@ public class EmoneyRepositoryDslImpl implements EmoneyRepositoryDsl {
         LocalDate endDate = searchDto.getSearchEndDate();
 
         if(EmoneySearchEnums.EXPIRATION_DATE.getVal().equals(dateType)){
-            builder.and(ConditionBuilderUtil.buildDateBetween(emoney.expirationDate, startDate, endDate));
+            builder.and(ConditionBuilderUtil.buildDateBetween(emoney.expirationDateTime, startDate, endDate));
         } else if(EmoneySearchEnums.CREATION_DATE.getVal().equals(dateType)){
-            builder.and(ConditionBuilderUtil.buildDateBetween(emoney.creationDate, startDate, endDate));
+            builder.and(ConditionBuilderUtil.buildDateBetween(emoney.creationDateTime, startDate, endDate));
         }
 
         String statusType = searchDto.getSearchStatusType();
@@ -104,7 +104,7 @@ public class EmoneyRepositoryDslImpl implements EmoneyRepositoryDsl {
         builder
             .and(emoney.userSeq.eq(emoneyDeductDto.getUserSeq()))
             .and(emoney.remainAmount.gt(0L))
-            .and(emoney.expirationDate.goe(emoneyDeductDto.getSearchDateTime()))
+            .and(emoney.expirationDateTime.goe(emoneyDeductDto.getSearchDateTime()))
             .and(emoney.isApproved.eq(true))
             .and(emoney.isExpired.eq(false));
 
@@ -112,7 +112,7 @@ public class EmoneyRepositoryDslImpl implements EmoneyRepositoryDsl {
                 .select(emoney)
                 .from(emoney)
                 .where(builder)
-                .orderBy(emoney.expirationDate.asc())
+                .orderBy(emoney.expirationDateTime.asc())
                 .fetch();
     }
 
@@ -123,7 +123,7 @@ public class EmoneyRepositoryDslImpl implements EmoneyRepositoryDsl {
             .and(emoney.userSeq.eq(emoneyCancelDto.getUserSeq()));
 
         LocalDateTime expirationDate = jpaQueryFactory
-                .select(emoney.expirationDate.max())
+                .select(emoney.expirationDateTime.max())
                 .from(emoney)
                 .where(builder)
                 .fetchOne();
