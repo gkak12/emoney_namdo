@@ -8,6 +8,7 @@ import com.emoney.domain.vo.EmoneyVo;
 import com.emoney.service.EmoneyService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +30,7 @@ public class EmoneyController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/page")
-    public ResponseEntity<EmoneyListVo> findPageEmoneys(@RequestBody EmoneySearchDto emoneySearchDto) {
+    public ResponseEntity<EmoneyListVo> findPageEmoneys(@ParameterObject EmoneySearchDto emoneySearchDto) {
         return ResponseEntity.ok(emoneyService.findPageEmoneys(emoneySearchDto));
     }
 
