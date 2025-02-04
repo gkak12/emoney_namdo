@@ -9,8 +9,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Constraint(validatedBy = EmoneySeqValidator.class)
-@Target({ElementType.PARAMETER, ElementType.FIELD})  // 사용할 위치를 지정 (파라미터, 필드)
-@Retention(RetentionPolicy.RUNTIME)  // 런타임 동안 유지
+@Target({ElementType.PARAMETER, ElementType.FIELD})     // 사용할 위치를 지정 (파라미터, 필드)
+@Retention(RetentionPolicy.RUNTIME)                     // 런타임 동안 유지
 public @interface ValidEmoneySeq {
 
     // 기본 메시지
