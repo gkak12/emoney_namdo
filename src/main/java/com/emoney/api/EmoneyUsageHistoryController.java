@@ -1,6 +1,7 @@
 package com.emoney.api;
 
 import com.emoney.domain.dto.EmoneyUsageHistorySearchDto;
+import com.emoney.domain.vo.EmoneyLogListVo;
 import com.emoney.domain.vo.EmoneyLogVo;
 import com.emoney.service.EmoneyUsageHistoryService;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +24,7 @@ public class EmoneyUsageHistoryController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/total-usage-amount-each-user")
-    public ResponseEntity<List<EmoneyLogVo>> findEmoneyTotalUsageAmountEachUser(@ParameterObject EmoneyUsageHistorySearchDto emoneyUsageHistorySearchDto){
+    public ResponseEntity<EmoneyLogListVo> findEmoneyTotalUsageAmountEachUser(@ParameterObject EmoneyUsageHistorySearchDto emoneyUsageHistorySearchDto){
         return ResponseEntity.ok(emoneyUsageHistoryService.findEmoneyTotalUsageAmountEachUser(emoneyUsageHistorySearchDto));
     }
 }
