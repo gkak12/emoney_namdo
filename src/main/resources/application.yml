@@ -14,3 +14,8 @@ spring:
       path: /h2-console   # H2 콘솔 경로
   config:
     import: jasypt.yml   # jasypt.yml
+
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
