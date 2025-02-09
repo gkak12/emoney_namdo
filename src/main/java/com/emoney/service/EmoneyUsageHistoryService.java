@@ -1,10 +1,10 @@
-package com.emoney.repository;
+package com.emoney.service;
 
 import com.emoney.domain.vo.EmoneyLogVo;
 
 import java.util.List;
 
-public interface EmoneyUsageHistoryRepositoryDsl {
+public interface EmoneyUsageHistoryService {
 
     List<EmoneyLogVo> findEmoneyTotalUsageAmountEachUser();
 }
