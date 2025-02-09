@@ -16,7 +16,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 import static com.emoney.domain.entity.QEmoney.emoney;
 import static com.emoney.domain.entity.QEmoneyUsageHistory.emoneyUsageHistory;
@@ -54,8 +53,8 @@ public class EmoneyUsageHistoryRepositoryDslImpl implements EmoneyUsageHistoryRe
             .where(builder)
             .groupBy(emoney.userSeq)
             .orderBy(emoney.userSeq.asc())
-            .offset(emoneyUsageHistorySearchDto.getPageOffset())
-            .limit(emoneyUsageHistorySearchDto.getPageSize())
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize())
             .fetch();
 
         int count = jpaQueryFactory
