@@ -1,5 +1,6 @@
 package com.emoney.service.impl;
 
+import com.emoney.domain.dto.EmoneyUsageHistorySearchDto;
 import com.emoney.domain.vo.EmoneyLogVo;
 import com.emoney.repository.EmoneyUsageHistoryRepository;
 import com.emoney.service.EmoneyUsageHistoryService;
@@ -17,7 +18,7 @@ public class EmoneyUsageHistoryServiceImpl implements EmoneyUsageHistoryService 
     private final EmoneyUsageHistoryRepository emoneyUsageHistoryRepository;
 
     @Override
-    public List<EmoneyLogVo> findEmoneyTotalUsageAmountEachUser() {
-        return emoneyUsageHistoryRepository.findEmoneyTotalUsageAmountEachUser();
+    public List<EmoneyLogVo> findEmoneyTotalUsageAmountEachUser(EmoneyUsageHistorySearchDto emoneyUsageHistorySearchDto) {
+        return emoneyUsageHistoryRepository.findEmoneyTotalUsageAmountEachUser(emoneyUsageHistorySearchDto);
     }
 }

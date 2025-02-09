@@ -1,8 +1,10 @@
 package com.emoney.api;
 
+import com.emoney.domain.dto.EmoneyUsageHistorySearchDto;
 import com.emoney.domain.vo.EmoneyLogVo;
 import com.emoney.service.EmoneyUsageHistoryService;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,7 +23,7 @@ public class EmoneyUsageHistoryController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/total-usage-amount-each-user")
-    public ResponseEntity<List<EmoneyLogVo>> findEmoneyTotalUsageAmountEachUser(){
-        return ResponseEntity.ok(emoneyUsageHistoryService.findEmoneyTotalUsageAmountEachUser());
+    public ResponseEntity<List<EmoneyLogVo>> findEmoneyTotalUsageAmountEachUser(@ParameterObject EmoneyUsageHistorySearchDto emoneyUsageHistorySearchDto){
+        return ResponseEntity.ok(emoneyUsageHistoryService.findEmoneyTotalUsageAmountEachUser(emoneyUsageHistorySearchDto));
     }
 }

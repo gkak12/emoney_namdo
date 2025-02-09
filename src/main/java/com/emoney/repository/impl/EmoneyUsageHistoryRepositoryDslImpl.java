@@ -1,7 +1,10 @@
 package com.emoney.repository.impl;
 
+import com.emoney.comm.util.ConditionBuilderUtil;
+import com.emoney.domain.dto.EmoneyUsageHistorySearchDto;
 import com.emoney.domain.vo.EmoneyLogVo;
 import com.emoney.repository.EmoneyUsageHistoryRepositoryDsl;
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +24,14 @@ public class EmoneyUsageHistoryRepositoryDslImpl implements EmoneyUsageHistoryRe
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<EmoneyLogVo> findEmoneyTotalUsageAmountEachUser() {
+    public List<EmoneyLogVo> findEmoneyTotalUsageAmountEachUser(EmoneyUsageHistorySearchDto emoneyUsageHistorySearchDto) {
+        BooleanBuilder builder = new BooleanBuilder();
+        builder
+            .and(ConditionBuilderUtil.buildEquals(emoney.userSeq, emoneyUsageHistorySearchDto.getUserSeq()))
+            .and(ConditionBuilderUtil.buildDateBetween(emoneyUsageHistory.creationDateTime,
+                    emoneyUsageHistorySearchDto.getSearchStartDate(),
+                    emoneyUsageHistorySearchDto.getSearchEndDate()));
+
         return jpaQueryFactory
             .select(Projections.fields(
                 EmoneyLogVo.class,
@@ -31,6 +41,7 @@ public class EmoneyUsageHistoryRepositoryDslImpl implements EmoneyUsageHistoryRe
             .from(emoneyUsageHistory)
             .leftJoin(emoney)
             .on(emoneyUsageHistory.emoney.emoneySeq.eq(emoney.emoneySeq))
+            .where(builder)
             .groupBy(emoney.userSeq)
             .fetch();
     }
