@@ -64,8 +64,7 @@ public class EmoneyServiceImpl implements EmoneyService {
                 .orElseThrow(() -> new EmoneyException(EmoneyErrorEnums.NOT_FOUND, "상세 조회 대상 적립금 존재하지 않습니다."));
         EmoneyVo emoneyVo = emoneyMapper.toVo(emoney);
 
-        List<EmoneyUsageHistory> emoneyUsageHistoryList = emoney.getUsageHistory();
-        List<EmoneyUsageHistoryVo> emoneyUsageHistoryVoList = emoneyUsageHistoryList.stream()
+        List<EmoneyUsageHistoryVo> emoneyUsageHistoryVoList = emoney.getUsageHistory().stream()
                 .map(emoneyUsageHistoryMapper::toVo)
                 .toList();
 
