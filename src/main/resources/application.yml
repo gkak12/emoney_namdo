@@ -8,6 +8,9 @@ spring:
     hibernate:
       ddl-auto: update    # 테이블 자동 생성 및 업데이트
     show-sql: true        # 실행된 SQL 쿼리 출력
+    properties:
+      hibernate:
+        format_sql: true
   h2:
     console:
       enabled: true       # H2 웹 콘솔 활성화
