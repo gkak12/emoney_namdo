@@ -83,8 +83,8 @@ public class EmoneyRepositoryDslImpl implements EmoneyRepositoryDsl {
                 .select(emoney)
                 .from(emoney)
                 .where(builder)
-                .offset(searchDto.getPageOffset())
-                .limit(searchDto.getPageSize())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .fetch();
 
         Long count = Optional.ofNullable(

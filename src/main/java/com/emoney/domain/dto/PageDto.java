@@ -5,11 +5,11 @@ import lombok.Data;
 @Data
 public class PageDto {
 
-    private int pageNumber;     // 현재 페이지 수
-    private int pageSize;       // 현재 페이지 항목 수
-    private int pageOffset;     // 현재 페이지 offset
+    private Integer pageNumber;     // 현재 페이지 수
+    private Integer pageSize;       // 현재 페이지 항목 수
+    private Integer pageOffset;     // 현재 페이지 offset
 
-    public int getPageOffset() {
-        return pageNumber < 1 ? 0 : (pageNumber-1) * pageSize;
+    public int getPageNumber() {
+        return pageNumber == null ? 0 : pageNumber-1;
     }
 }
