@@ -1,9 +1,7 @@
 package com.emoney.service.impl;
 
 import com.emoney.domain.dto.EmoneyUsageHistorySearchDto;
-import com.emoney.domain.vo.EmoneyLogListVo;
-import com.emoney.domain.vo.EmoneyLogVo;
-import com.emoney.domain.vo.PageVo;
+import com.emoney.domain.vo.*;
 import com.emoney.repository.EmoneyUsageHistoryRepository;
 import com.emoney.service.EmoneyUsageHistoryService;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +26,21 @@ public class EmoneyUsageHistoryServiceImpl implements EmoneyUsageHistoryService 
                 .build();
 
         return EmoneyLogListVo.builder()
+                .list(page.getContent())
+                .page(pageVo)
+                .build();
+    }
+
+    @Override
+    public EmoneyUsageHistoryLogListVo findEmoneyUsageHistoryEachUser(EmoneyUsageHistorySearchDto emoneyUsageHistorySearchDto) {
+        Page<EmoneyUsageHistoryLogVo> page = emoneyUsageHistoryRepository.findEmoneyUsageHistoryEachUser(emoneyUsageHistorySearchDto);
+
+        PageVo pageVo = PageVo.builder()
+                .totalPages(page.getTotalPages())
+                .totalItems(page.getTotalElements())
+                .build();
+
+        return EmoneyUsageHistoryLogListVo.builder()
                 .list(page.getContent())
                 .page(pageVo)
                 .build();
