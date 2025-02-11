@@ -3,12 +3,12 @@ package com.emoney.service.impl;
 import com.emoney.comm.enums.EmoneyErrorEnums;
 import com.emoney.comm.exception.EmoneyException;
 import com.emoney.comm.util.DateTimeUtil;
-import com.emoney.domain.dto.*;
+import com.emoney.domain.dto.request.*;
+import com.emoney.domain.dto.response.*;
 import com.emoney.domain.entity.Emoney;
 import com.emoney.domain.entity.EmoneyUsageHistory;
 import com.emoney.domain.mapper.EmoneyMapper;
 import com.emoney.domain.mapper.EmoneyUsageHistoryMapper;
-import com.emoney.domain.vo.*;
 import com.emoney.repository.EmoneyRepository;
 import com.emoney.repository.EmoneyUsageHistoryRepository;
 import com.emoney.service.EmoneyService;
@@ -33,63 +33,63 @@ public class EmoneyServiceImpl implements EmoneyService {
     private final EmoneyUsageHistoryRepository emoneyUsageHistoryRepository;
 
     @Override
-    public List<EmoneyVo> findAllEmoneys() {
+    public List<ResponseEmoneyDto> findAllEmoneys() {
         return emoneyRepository.findAll().stream()
                 .map(emoneyMapper::toVo)
                 .toList();
     }
 
     @Override
-    public EmoneyListVo findPageEmoneys(EmoneySearchDto emoneySearchDto) {
-        Page<Emoney> page = emoneyRepository.findEmoneyPaging(emoneySearchDto);
+    public ResponseEmoneyResponseListDto findPageEmoneys(RequestEmoneySearchDto emoneyRequestSearchDto) {
+        Page<Emoney> page = emoneyRepository.findEmoneyPaging(emoneyRequestSearchDto);
 
-        PageVo pageVo = PageVo.builder()
+        ResponsePageDto responsePageDto = ResponsePageDto.builder()
                 .totalPages(page.getTotalPages())
                 .totalItems(page.getTotalElements())
                 .build();
 
-        List<EmoneyVo> list = page.get().toList().stream()
+        List<ResponseEmoneyDto> list = page.get().toList().stream()
             .map(emoneyMapper::toVo)
             .toList();
 
-        return EmoneyListVo.builder()
-                .page(pageVo)
+        return ResponseEmoneyResponseListDto.builder()
+                .page(responsePageDto)
                 .list(list)
                 .build();
     }
 
     @Override
-    public EmoneyDetailVo findEmoneyDetail(Long emoneySeq) {
+    public ResponseEmoneyResponseDetailDto findEmoneyDetail(Long emoneySeq) {
         Emoney emoney = emoneyRepository.findById(emoneySeq)
                 .orElseThrow(() -> new EmoneyException(EmoneyErrorEnums.NOT_FOUND, "상세 조회 대상 적립금 존재하지 않습니다."));
-        EmoneyVo emoneyVo = emoneyMapper.toVo(emoney);
+        ResponseEmoneyDto responseEmoneyDto = emoneyMapper.toVo(emoney);
 
-        List<EmoneyUsageHistoryVo> emoneyUsageHistoryVoList = emoney.getUsageHistory().stream()
+        List<ResponseEmoneyUsageHistoryDto> responseEmoneyUsageHistoryDtoList = emoney.getUsageHistory().stream()
                 .map(emoneyUsageHistoryMapper::toVo)
                 .toList();
 
-        return EmoneyDetailVo.builder()
-                .emoneyVo(emoneyVo)
-                .emoneyUsageHistoryVoList(emoneyUsageHistoryVoList)
+        return ResponseEmoneyResponseDetailDto.builder()
+                .responseEmoneyDto(responseEmoneyDto)
+                .responseEmoneyUsageHistoryDtoList(responseEmoneyUsageHistoryDtoList)
                 .build();
     }
 
     @Override
-    public void createEmoney(EmoneyCreateDto emoneyCreateDto) {
-        Emoney emoney = emoneyMapper.toCreateEntity(emoneyCreateDto);
+    public void createEmoney(RequestEmoneyCreateDto requestEmoneyCreateDto) {
+        Emoney emoney = emoneyMapper.toCreateEntity(requestEmoneyCreateDto);
         emoneyRepository.save(emoney);
     }
 
     @Override
-    public void deductEmoney(EmoneyDeductDto emoneyDeductDto) {
+    public void deductEmoney(RequestEmoneyDeductDto requestEmoneyDeductDto) {
         // 1. 적립금 사용/차감 요청 정보 세팅
-        Long userSeq = emoneyDeductDto.getUserSeq();
-        Long emoneyRequestAmount = emoneyDeductDto.getAmount();
+        Long userSeq = requestEmoneyDeductDto.getUserSeq();
+        Long emoneyRequestAmount = requestEmoneyDeductDto.getAmount();
         LocalDateTime localDateTime = DateTimeUtil.getLocalDateTime();
-        emoneyDeductDto.setSearchDateTime(localDateTime);
+        requestEmoneyDeductDto.setSearchDateTime(localDateTime);
 
         // 2. 사용/차감 가능 적립금 조회(적립금 만료일이 빠른 순서대로 정렬) 및 사용/차감 가능 적립금 확인
-        List<Emoney> emoneyList = emoneyRepository.findAllUsableEmoneyList(emoneyDeductDto);
+        List<Emoney> emoneyList = emoneyRepository.findAllUsableEmoneyList(requestEmoneyDeductDto);
         validateUsableEmoneyList(emoneyList, "사용 가능한 적립금이 없습니다.");
 
         // 3. 사용/차감 요청한 적립금이 사용/차감 가능 전체 적립금 보다 큰지 비교(적립금 잔액 검사)
@@ -116,9 +116,9 @@ public class EmoneyServiceImpl implements EmoneyService {
             // 4-3. 적립금 사용/차감 내역 테이블 등록
             emoneyUsageHistoryRepository.save(
                     EmoneyUsageHistory.builder()
-                            .usageTypeSeq(emoneyDeductDto.getUsageTypeSeq())
+                            .usageTypeSeq(requestEmoneyDeductDto.getUsageTypeSeq())
                             .usageAmount(emoneyUsageAmount)
-                            .content(emoneyDeductDto.getContent())
+                            .content(requestEmoneyDeductDto.getContent())
                             .creationDateTime(localDateTime)
                             .emoney(emoney)
                             .build()
@@ -137,32 +137,32 @@ public class EmoneyServiceImpl implements EmoneyService {
         emoneyRepository.save(
                 Emoney.builder()
                         .userSeq(userSeq)
-                        .orderSeq(emoneyDeductDto.getOrderSeq())
-                        .typeSeq(emoneyDeductDto.getTypeSeq())
-                        .amount(emoneyDeductDto.getAmount())
-                        .usageAmount(emoneyDeductDto.getAmount())
+                        .orderSeq(requestEmoneyDeductDto.getOrderSeq())
+                        .typeSeq(requestEmoneyDeductDto.getTypeSeq())
+                        .amount(requestEmoneyDeductDto.getAmount())
+                        .usageAmount(requestEmoneyDeductDto.getAmount())
                         .remainAmount(0L)
                         .isApproved(true)
-                        .content(emoneyDeductDto.getContent())
+                        .content(requestEmoneyDeductDto.getContent())
                         .creationDateTime(localDateTime)
                         .build()
         );
     }
 
     @Override
-    public void useCancelEmoney(EmoneyCancelDto emoneyCancelDto) {
-        Map<String, Object> resultMap = emoneyRepository.findCancellationEmoney(emoneyCancelDto);
+    public void useCancelEmoney(RequestEmoneyCancelDto requestEmoneyCancelDto) {
+        Map<String, Object> resultMap = emoneyRepository.findCancellationEmoney(requestEmoneyCancelDto);
         LocalDateTime expirationDateTime = (LocalDateTime) resultMap.get("expirationDate");
         Long amount = (Long) resultMap.get("amount");
 
         // 적립금 취소하면 기존에 사용한 적립금 원복하는게 아니라 새로운 적립금 발급
         emoneyRepository.save(
                 Emoney.builder()
-                        .userSeq(emoneyCancelDto.getUserSeq())
+                        .userSeq(requestEmoneyCancelDto.getUserSeq())
                         .amount(amount)
                         .usageAmount(0L)
                         .remainAmount(amount)
-                        .content(emoneyCancelDto.getContent())
+                        .content(requestEmoneyCancelDto.getContent())
                         .expirationDateTime(expirationDateTime)
                         .creationDateTime(DateTimeUtil.getLocalDateTime())
                         .build()
@@ -190,10 +190,10 @@ public class EmoneyServiceImpl implements EmoneyService {
     }
 
     @Override
-    public void extendEmoney(EmoneyExtendDto emoneyExtendDto) {
-        LocalDateTime expirationDateTime = emoneyExtendDto.getExpirationDateTime();
+    public void extendEmoney(RequestEmoneyExtendDto requestEmoneyExtendDto) {
+        LocalDateTime expirationDateTime = requestEmoneyExtendDto.getExpirationDateTime();
 
-        Emoney emoney = emoneyRepository.findById(emoneyExtendDto.getEmoneySeq())
+        Emoney emoney = emoneyRepository.findById(requestEmoneyExtendDto.getEmoneySeq())
                 .orElseThrow(() -> new EmoneyException(EmoneyErrorEnums.NOT_FOUND, "연장 대상 적립금 존재하지 않습니다."));
 
         String workName = "연장";

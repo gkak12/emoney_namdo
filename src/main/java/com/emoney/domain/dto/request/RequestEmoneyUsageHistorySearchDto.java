@@ -1,4 +1,4 @@
-package com.emoney.domain.dto;
+package com.emoney.domain.dto.request;
 
 import lombok.*;
 
@@ -9,7 +9,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class EmoneyUsageHistorySearchDto extends PageDto {
+public class RequestEmoneyUsageHistorySearchDto extends RequestPageDto {
 
     private Long userSeq;
     private LocalDate searchStartDate;

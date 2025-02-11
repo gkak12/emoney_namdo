@@ -1,9 +1,9 @@
 package com.emoney.domain.mapper;
 
 import com.emoney.comm.util.DateTimeUtil;
-import com.emoney.domain.dto.EmoneyCreateDto;
+import com.emoney.domain.dto.request.RequestEmoneyCreateDto;
+import com.emoney.domain.dto.response.ResponseEmoneyDto;
 import com.emoney.domain.entity.Emoney;
-import com.emoney.domain.vo.EmoneyVo;
 import org.mapstruct.*;
 
 import java.time.LocalDateTime;
@@ -20,7 +20,7 @@ public interface EmoneyMapper {
 
     @Mapping(source = "expirationDateTime", target = "expirationDateTime", qualifiedByName = "setLocalDateTimeToString")
     @Mapping(source = "creationDateTime", target = "creationDateTime", qualifiedByName = "setLocalDateTimeToString")
-    EmoneyVo toVo(Emoney emoney);
+    ResponseEmoneyDto toVo(Emoney emoney);
 
     @Named("setLocalDateTimeToString")
     default String setLocalDateTimeToString(LocalDateTime localDateTime) {
@@ -31,12 +31,12 @@ public interface EmoneyMapper {
     @Mapping(target = "usageAmount", ignore = true)
     @Mapping(target = "remainAmount", ignore = true)
     @Mapping(target = "creationDateTime", ignore = true)
-    Emoney toCreateEntity(EmoneyCreateDto emoneyCreateDto);
+    Emoney toCreateEntity(RequestEmoneyCreateDto requestEmoneyCreateDto);
 
     @AfterMapping
-    default void setAdditionalFields(EmoneyCreateDto emoneyCreateDto, @MappingTarget Emoney emoney) {
+    default void setAdditionalFields(RequestEmoneyCreateDto requestEmoneyCreateDto, @MappingTarget Emoney emoney) {
         emoney.setUsageAmount(0L);
-        emoney.setRemainAmount(emoneyCreateDto.getAmount());
+        emoney.setRemainAmount(requestEmoneyCreateDto.getAmount());
         emoney.setCreationDateTime(DateTimeUtil.getLocalDateTime());
     }
 }

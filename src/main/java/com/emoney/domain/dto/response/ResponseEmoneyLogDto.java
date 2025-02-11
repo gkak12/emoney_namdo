@@ -1,4 +1,4 @@
-package com.emoney.domain.vo;
+package com.emoney.domain.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class EmoneyLogVo {
+public class ResponseEmoneyLogDto {
 
     private Long userSeq;
     private Long usageAmount;

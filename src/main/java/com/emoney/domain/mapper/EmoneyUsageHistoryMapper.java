@@ -1,7 +1,7 @@
 package com.emoney.domain.mapper;
 
+import com.emoney.domain.dto.response.ResponseEmoneyUsageHistoryDto;
 import com.emoney.domain.entity.EmoneyUsageHistory;
-import com.emoney.domain.vo.EmoneyUsageHistoryVo;
 import org.mapstruct.*;
 
 @Mapper(
@@ -14,5 +14,5 @@ import org.mapstruct.*;
 public interface EmoneyUsageHistoryMapper {
 
     @Mapping(source = "creationDateTime", target = "creationDateTime", dateFormat = "yyyy-MM-dd HH:mm:ss")
-    EmoneyUsageHistoryVo toVo(EmoneyUsageHistory emoneyUsageHistory);
+    ResponseEmoneyUsageHistoryDto toVo(EmoneyUsageHistory emoneyUsageHistory);
 }

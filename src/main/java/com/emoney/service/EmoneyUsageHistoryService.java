@@ -1,11 +1,11 @@
 package com.emoney.service;
 
-import com.emoney.domain.dto.EmoneyUsageHistorySearchDto;
-import com.emoney.domain.vo.EmoneyLogListVo;
-import com.emoney.domain.vo.EmoneyUsageHistoryLogListVo;
+import com.emoney.domain.dto.request.RequestEmoneyUsageHistorySearchDto;
+import com.emoney.domain.dto.response.ResponseEmoneyLogListDto;
+import com.emoney.domain.dto.response.ResponseEmoneyUsageHistoryLogListDto;
 
 public interface EmoneyUsageHistoryService {
 
-    EmoneyLogListVo findEmoneyTotalUsageAmountEachUser(EmoneyUsageHistorySearchDto emoneyUsageHistorySearchDto);
-    EmoneyUsageHistoryLogListVo findEmoneyUsageHistoryEachUser(EmoneyUsageHistorySearchDto emoneyUsageHistorySearchDto);
+    ResponseEmoneyLogListDto findEmoneyTotalUsageAmountEachUser(RequestEmoneyUsageHistorySearchDto emoneyUsageHistorySearchDto);
+    ResponseEmoneyUsageHistoryLogListDto findEmoneyUsageHistoryEachUser(RequestEmoneyUsageHistorySearchDto emoneyUsageHistorySearchDto);
 }

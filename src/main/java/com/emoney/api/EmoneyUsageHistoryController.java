@@ -1,8 +1,8 @@
 package com.emoney.api;
 
-import com.emoney.domain.dto.EmoneyUsageHistorySearchDto;
-import com.emoney.domain.vo.EmoneyLogListVo;
-import com.emoney.domain.vo.EmoneyUsageHistoryLogListVo;
+import com.emoney.domain.dto.request.RequestEmoneyUsageHistorySearchDto;
+import com.emoney.domain.dto.response.ResponseEmoneyLogListDto;
+import com.emoney.domain.dto.response.ResponseEmoneyUsageHistoryLogListDto;
 import com.emoney.service.EmoneyUsageHistoryService;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
@@ -22,13 +22,13 @@ public class EmoneyUsageHistoryController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/total-usage-amount-each-user")
-    public ResponseEntity<EmoneyLogListVo> findEmoneyTotalUsageAmountEachUser(@ParameterObject EmoneyUsageHistorySearchDto emoneyUsageHistorySearchDto){
+    public ResponseEntity<ResponseEmoneyLogListDto> findEmoneyTotalUsageAmountEachUser(@ParameterObject RequestEmoneyUsageHistorySearchDto emoneyUsageHistorySearchDto){
         return ResponseEntity.ok(emoneyUsageHistoryService.findEmoneyTotalUsageAmountEachUser(emoneyUsageHistorySearchDto));
     }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/usage-history-each-user")
-    public ResponseEntity<EmoneyUsageHistoryLogListVo> findEmoneyUsageHistoryEachUser(@ParameterObject EmoneyUsageHistorySearchDto emoneyUsageHistorySearchDto){
+    public ResponseEntity<ResponseEmoneyUsageHistoryLogListDto> findEmoneyUsageHistoryEachUser(@ParameterObject RequestEmoneyUsageHistorySearchDto emoneyUsageHistorySearchDto){
         return ResponseEntity.ok(emoneyUsageHistoryService.findEmoneyUsageHistoryEachUser(emoneyUsageHistorySearchDto));
     }
 }

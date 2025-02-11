@@ -1,7 +1,5 @@
-package com.emoney.domain.dto;
+package com.emoney.domain.dto.response;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,24 +11,15 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class EmoneyDeductDto {
+public class ResponseEmoneyUsageHistoryLogDto {
 
-    @NotNull
+    private Long emoneySeq;
     private Long userSeq;
-
     private Long orderSeq;
-
-    @NotNull
     private Long typeSeq;
-
-    @NotNull
+    private Long emoneyUsageHistorySeq;
     private Long usageTypeSeq;
-
-    @NotNull
-    private Long amount;
-
+    private Long usageAmount;
     private String content;
-
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime searchDateTime;
+    private LocalDateTime creationDateTime;
 }

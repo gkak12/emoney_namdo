@@ -1,10 +1,10 @@
 package com.emoney.api;
 
 import com.emoney.comm.annotation.ValidEmoneySeq;
-import com.emoney.domain.dto.*;
-import com.emoney.domain.vo.EmoneyDetailVo;
-import com.emoney.domain.vo.EmoneyListVo;
-import com.emoney.domain.vo.EmoneyVo;
+import com.emoney.domain.dto.request.*;
+import com.emoney.domain.dto.response.ResponseEmoneyDto;
+import com.emoney.domain.dto.response.ResponseEmoneyResponseDetailDto;
+import com.emoney.domain.dto.response.ResponseEmoneyResponseListDto;
 import com.emoney.service.EmoneyService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,40 +24,40 @@ public class EmoneyController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
-    public ResponseEntity<List<EmoneyVo>> findAllEmoneys() {
+    public ResponseEntity<List<ResponseEmoneyDto>> findAllEmoneys() {
         return ResponseEntity.ok(emoneyService.findAllEmoneys());
     }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/page")
-    public ResponseEntity<EmoneyListVo> findPageEmoneys(@ParameterObject EmoneySearchDto emoneySearchDto) {
-        return ResponseEntity.ok(emoneyService.findPageEmoneys(emoneySearchDto));
+    public ResponseEntity<ResponseEmoneyResponseListDto> findPageEmoneys(@ParameterObject RequestEmoneySearchDto emoneyRequestSearchDto) {
+        return ResponseEntity.ok(emoneyService.findPageEmoneys(emoneyRequestSearchDto));
     }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/detail/{emoneySeq}")
-    public ResponseEntity<EmoneyDetailVo> findEmoneyDetail(@PathVariable @Valid @ValidEmoneySeq Long emoneySeq) {
+    public ResponseEntity<ResponseEmoneyResponseDetailDto> findEmoneyDetail(@PathVariable @Valid @ValidEmoneySeq Long emoneySeq) {
         return ResponseEntity.ok(emoneyService.findEmoneyDetail(emoneySeq));
     }
 
     @ResponseStatus(HttpStatus.OK)
     @PostMapping
-    public ResponseEntity<Void> createEmoney(@RequestBody @Valid EmoneyCreateDto emoneyCreateDto) {
-        emoneyService.createEmoney(emoneyCreateDto);
+    public ResponseEntity<Void> createEmoney(@RequestBody @Valid RequestEmoneyCreateDto requestEmoneyCreateDto) {
+        emoneyService.createEmoney(requestEmoneyCreateDto);
         return ResponseEntity.ok().build();
     }
 
     @ResponseStatus(HttpStatus.OK)
     @PatchMapping({"/usage", "/deduct"})
-    public ResponseEntity<Void> deductEmoney(@RequestBody @Valid EmoneyDeductDto emoneyDeductDto) {
-        emoneyService.deductEmoney(emoneyDeductDto);
+    public ResponseEntity<Void> deductEmoney(@RequestBody @Valid RequestEmoneyDeductDto requestEmoneyDeductDto) {
+        emoneyService.deductEmoney(requestEmoneyDeductDto);
         return ResponseEntity.ok().build();
     }
 
     @ResponseStatus(HttpStatus.OK)
     @PatchMapping("/usage-cancel")
-    public ResponseEntity<Void> useCancelEmoney(@RequestBody @Valid EmoneyCancelDto emoneyCancelDto) {
-        emoneyService.useCancelEmoney(emoneyCancelDto);
+    public ResponseEntity<Void> useCancelEmoney(@RequestBody @Valid RequestEmoneyCancelDto requestEmoneyCancelDto) {
+        emoneyService.useCancelEmoney(requestEmoneyCancelDto);
         return ResponseEntity.ok().build();
     }
 
@@ -77,8 +77,8 @@ public class EmoneyController {
 
     @ResponseStatus(HttpStatus.OK)
     @PatchMapping("/extend")
-    public ResponseEntity<Void> extendEmoney(@RequestBody @Valid EmoneyExtendDto emoneyExtendDto) {
-        emoneyService.extendEmoney(emoneyExtendDto);
+    public ResponseEntity<Void> extendEmoney(@RequestBody @Valid RequestEmoneyExtendDto requestEmoneyExtendDto) {
+        emoneyService.extendEmoney(requestEmoneyExtendDto);
         return ResponseEntity.ok().build();
     }
 

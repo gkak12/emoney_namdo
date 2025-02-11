@@ -1,4 +1,4 @@
-package com.emoney.domain.dto;
+package com.emoney.domain.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotNull;
@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class EmoneyCreateDto {
+public class RequestEmoneyCreateDto {
 
     @NotNull
     private Long userSeq;

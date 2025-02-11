@@ -1,11 +1,11 @@
-package com.emoney.domain.vo;
+package com.emoney.domain.dto.response;
 
 import lombok.Builder;
 import lombok.Data;
 
 @Data
 @Builder
-public class EmoneyUsageHistoryVo {
+public class ResponseEmoneyUsageHistoryDto {
 
     private Long emoneyUsageHistorySeq;
     private Long usageTypeSeq;

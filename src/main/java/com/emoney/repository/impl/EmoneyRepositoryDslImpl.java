@@ -2,9 +2,9 @@ package com.emoney.repository.impl;
 
 import com.emoney.comm.enums.EmoneySearchEnums;
 import com.emoney.comm.util.ConditionBuilderUtil;
-import com.emoney.domain.dto.EmoneyCancelDto;
-import com.emoney.domain.dto.EmoneyDeductDto;
-import com.emoney.domain.dto.EmoneySearchDto;
+import com.emoney.domain.dto.request.RequestEmoneyCancelDto;
+import com.emoney.domain.dto.request.RequestEmoneyDeductDto;
+import com.emoney.domain.dto.request.RequestEmoneySearchDto;
 import com.emoney.domain.entity.Emoney;
 import com.emoney.repository.EmoneyRepositoryDsl;
 import com.querydsl.core.BooleanBuilder;
@@ -34,7 +34,7 @@ public class EmoneyRepositoryDslImpl implements EmoneyRepositoryDsl {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public Page<Emoney> findEmoneyPaging(EmoneySearchDto searchDto) {
+    public Page<Emoney> findEmoneyPaging(RequestEmoneySearchDto searchDto) {
         Pageable pageable = PageRequest.of(
                 searchDto.getPageNumber(),
                 searchDto.getPageSize()
@@ -99,12 +99,12 @@ public class EmoneyRepositoryDslImpl implements EmoneyRepositoryDsl {
     }
 
     @Override
-    public List<Emoney> findAllUsableEmoneyList(EmoneyDeductDto emoneyDeductDto) {
+    public List<Emoney> findAllUsableEmoneyList(RequestEmoneyDeductDto requestEmoneyDeductDto) {
         BooleanBuilder builder = new BooleanBuilder();
         builder
-            .and(emoney.userSeq.eq(emoneyDeductDto.getUserSeq()))
+            .and(emoney.userSeq.eq(requestEmoneyDeductDto.getUserSeq()))
             .and(emoney.remainAmount.gt(0L))
-            .and(emoney.expirationDateTime.goe(emoneyDeductDto.getSearchDateTime()))
+            .and(emoney.expirationDateTime.goe(requestEmoneyDeductDto.getSearchDateTime()))
             .and(emoney.isApproved.eq(true))
             .and(emoney.isExpired.eq(false));
 
@@ -117,10 +117,10 @@ public class EmoneyRepositoryDslImpl implements EmoneyRepositoryDsl {
     }
 
     @Override
-    public Map<String, Object> findCancellationEmoney(EmoneyCancelDto emoneyCancelDto) {
+    public Map<String, Object> findCancellationEmoney(RequestEmoneyCancelDto requestEmoneyCancelDto) {
         BooleanBuilder builder = new BooleanBuilder();
         builder
-            .and(emoney.userSeq.eq(emoneyCancelDto.getUserSeq()));
+            .and(emoney.userSeq.eq(requestEmoneyCancelDto.getUserSeq()));
 
         LocalDateTime expirationDate = jpaQueryFactory
                 .select(emoney.expirationDateTime.max())
@@ -129,7 +129,7 @@ public class EmoneyRepositoryDslImpl implements EmoneyRepositoryDsl {
                 .fetchOne();
 
         builder
-            .and(emoney.orderSeq.eq(emoneyCancelDto.getOrderSeq()));
+            .and(emoney.orderSeq.eq(requestEmoneyCancelDto.getOrderSeq()));
 
         Long amount = jpaQueryFactory
                 .select(emoney.amount)

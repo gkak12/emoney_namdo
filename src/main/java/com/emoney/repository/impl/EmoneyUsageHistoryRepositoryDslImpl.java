@@ -1,9 +1,9 @@
 package com.emoney.repository.impl;
 
 import com.emoney.comm.util.ConditionBuilderUtil;
-import com.emoney.domain.dto.EmoneyUsageHistorySearchDto;
-import com.emoney.domain.vo.EmoneyLogVo;
-import com.emoney.domain.vo.EmoneyUsageHistoryLogVo;
+import com.emoney.domain.dto.request.RequestEmoneyUsageHistorySearchDto;
+import com.emoney.domain.dto.response.ResponseEmoneyLogDto;
+import com.emoney.domain.dto.response.ResponseEmoneyUsageHistoryLogDto;
 import com.emoney.repository.EmoneyUsageHistoryRepositoryDsl;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
@@ -29,7 +29,7 @@ public class EmoneyUsageHistoryRepositoryDslImpl implements EmoneyUsageHistoryRe
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public Page<EmoneyLogVo> findEmoneyTotalUsageAmountEachUser(EmoneyUsageHistorySearchDto emoneyUsageHistorySearchDto) {
+    public Page<ResponseEmoneyLogDto> findEmoneyTotalUsageAmountEachUser(RequestEmoneyUsageHistorySearchDto emoneyUsageHistorySearchDto) {
         Pageable pageable = PageRequest.of(
             emoneyUsageHistorySearchDto.getPageNumber(),
             emoneyUsageHistorySearchDto.getPageSize()
@@ -42,9 +42,9 @@ public class EmoneyUsageHistoryRepositoryDslImpl implements EmoneyUsageHistoryRe
                 emoneyUsageHistorySearchDto.getSearchStartDate(),
                 emoneyUsageHistorySearchDto.getSearchEndDate()));
 
-        List<EmoneyLogVo> list = jpaQueryFactory
+        List<ResponseEmoneyLogDto> list = jpaQueryFactory
             .select(Projections.fields(
-                EmoneyLogVo.class,
+                ResponseEmoneyLogDto.class,
                 emoney.userSeq,
                 emoneyUsageHistory.usageAmount.sum().as("usageAmount")
             ))
@@ -72,7 +72,7 @@ public class EmoneyUsageHistoryRepositoryDslImpl implements EmoneyUsageHistoryRe
     }
 
     @Override
-    public Page<EmoneyUsageHistoryLogVo> findEmoneyUsageHistoryEachUser(EmoneyUsageHistorySearchDto emoneyUsageHistorySearchDto) {
+    public Page<ResponseEmoneyUsageHistoryLogDto> findEmoneyUsageHistoryEachUser(RequestEmoneyUsageHistorySearchDto emoneyUsageHistorySearchDto) {
         Pageable pageable = PageRequest.of(
             emoneyUsageHistorySearchDto.getPageNumber(),
             emoneyUsageHistorySearchDto.getPageSize()
@@ -85,9 +85,9 @@ public class EmoneyUsageHistoryRepositoryDslImpl implements EmoneyUsageHistoryRe
                 emoneyUsageHistorySearchDto.getSearchStartDate(),
                 emoneyUsageHistorySearchDto.getSearchEndDate()));
 
-        List<EmoneyUsageHistoryLogVo> list = jpaQueryFactory
+        List<ResponseEmoneyUsageHistoryLogDto> list = jpaQueryFactory
             .select(Projections.fields(
-                EmoneyUsageHistoryLogVo.class,
+                ResponseEmoneyUsageHistoryLogDto.class,
                     emoney.emoneySeq,
                     emoney.userSeq,
                     emoney.orderSeq,

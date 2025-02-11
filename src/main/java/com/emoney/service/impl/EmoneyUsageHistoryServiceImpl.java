@@ -1,7 +1,7 @@
 package com.emoney.service.impl;
 
-import com.emoney.domain.dto.EmoneyUsageHistorySearchDto;
-import com.emoney.domain.vo.*;
+import com.emoney.domain.dto.request.RequestEmoneyUsageHistorySearchDto;
+import com.emoney.domain.dto.response.*;
 import com.emoney.repository.EmoneyUsageHistoryRepository;
 import com.emoney.service.EmoneyUsageHistoryService;
 import lombok.RequiredArgsConstructor;
@@ -17,32 +17,32 @@ public class EmoneyUsageHistoryServiceImpl implements EmoneyUsageHistoryService 
     private final EmoneyUsageHistoryRepository emoneyUsageHistoryRepository;
 
     @Override
-    public EmoneyLogListVo findEmoneyTotalUsageAmountEachUser(EmoneyUsageHistorySearchDto emoneyUsageHistorySearchDto) {
-        Page<EmoneyLogVo> page = emoneyUsageHistoryRepository.findEmoneyTotalUsageAmountEachUser(emoneyUsageHistorySearchDto);
+    public ResponseEmoneyLogListDto findEmoneyTotalUsageAmountEachUser(RequestEmoneyUsageHistorySearchDto emoneyUsageHistorySearchDto) {
+        Page<ResponseEmoneyLogDto> page = emoneyUsageHistoryRepository.findEmoneyTotalUsageAmountEachUser(emoneyUsageHistorySearchDto);
 
-        PageVo pageVo = PageVo.builder()
+        ResponsePageDto responsePageDto = ResponsePageDto.builder()
                 .totalPages(page.getTotalPages())
                 .totalItems(page.getTotalElements())
                 .build();
 
-        return EmoneyLogListVo.builder()
+        return ResponseEmoneyLogListDto.builder()
                 .list(page.getContent())
-                .page(pageVo)
+                .page(responsePageDto)
                 .build();
     }
 
     @Override
-    public EmoneyUsageHistoryLogListVo findEmoneyUsageHistoryEachUser(EmoneyUsageHistorySearchDto emoneyUsageHistorySearchDto) {
-        Page<EmoneyUsageHistoryLogVo> page = emoneyUsageHistoryRepository.findEmoneyUsageHistoryEachUser(emoneyUsageHistorySearchDto);
+    public ResponseEmoneyUsageHistoryLogListDto findEmoneyUsageHistoryEachUser(RequestEmoneyUsageHistorySearchDto emoneyUsageHistorySearchDto) {
+        Page<ResponseEmoneyUsageHistoryLogDto> page = emoneyUsageHistoryRepository.findEmoneyUsageHistoryEachUser(emoneyUsageHistorySearchDto);
 
-        PageVo pageVo = PageVo.builder()
+        ResponsePageDto responsePageDto = ResponsePageDto.builder()
                 .totalPages(page.getTotalPages())
                 .totalItems(page.getTotalElements())
                 .build();
 
-        return EmoneyUsageHistoryLogListVo.builder()
+        return ResponseEmoneyUsageHistoryLogListDto.builder()
                 .list(page.getContent())
-                .page(pageVo)
+                .page(responsePageDto)
                 .build();
     }
 }

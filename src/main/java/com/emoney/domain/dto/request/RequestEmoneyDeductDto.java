@@ -1,7 +1,6 @@
-package com.emoney.domain.dto;
+package com.emoney.domain.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,13 +13,24 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class EmoneyExtendDto {
+public class RequestEmoneyDeductDto {
 
     @NotNull
-    @Min(1)
-    private Long emoneySeq;
+    private Long userSeq;
+
+    private Long orderSeq;
 
     @NotNull
+    private Long typeSeq;
+
+    @NotNull
+    private Long usageTypeSeq;
+
+    @NotNull
+    private Long amount;
+
+    private String content;
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime expirationDateTime;
+    private LocalDateTime searchDateTime;
 }
