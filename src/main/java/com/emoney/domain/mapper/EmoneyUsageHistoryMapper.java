@@ -14,5 +14,5 @@ import org.mapstruct.*;
 public interface EmoneyUsageHistoryMapper {
 
     @Mapping(source = "creationDateTime", target = "creationDateTime", dateFormat = "yyyy-MM-dd HH:mm:ss")
-    ResponseEmoneyUsageHistoryDto toVo(EmoneyUsageHistory emoneyUsageHistory);
+    ResponseEmoneyUsageHistoryDto toResponseDto(EmoneyUsageHistory emoneyUsageHistory);
 }

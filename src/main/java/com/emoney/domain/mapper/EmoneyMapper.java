@@ -20,7 +20,7 @@ public interface EmoneyMapper {
 
     @Mapping(source = "expirationDateTime", target = "expirationDateTime", qualifiedByName = "setLocalDateTimeToString")
     @Mapping(source = "creationDateTime", target = "creationDateTime", qualifiedByName = "setLocalDateTimeToString")
-    ResponseEmoneyDto toVo(Emoney emoney);
+    ResponseEmoneyDto toResponseDto(Emoney emoney);
 
     @Named("setLocalDateTimeToString")
     default String setLocalDateTimeToString(LocalDateTime localDateTime) {
