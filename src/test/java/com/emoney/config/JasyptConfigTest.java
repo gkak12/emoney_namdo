@@ -20,7 +20,7 @@ public class JasyptConfigTest {
         String password = "postgres12#$";
 
         System.out.println("url: ".concat(jasyptEncoding(url)));
-        System.out.println("sa: ".concat(jasyptEncoding(username)));
+        System.out.println("username: ".concat(jasyptEncoding(username)));
         System.out.println("password: ".concat(jasyptEncoding(password)));
     }
 
