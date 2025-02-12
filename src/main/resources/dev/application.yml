@@ -1,0 +1,28 @@
+spring:
+  datasource:
+    url: ENC(fAbwXDJL4DUiGTv8Dm8tsUv0z1Djq2SwowH9vHgGw+AX1MgBsBn+Fbag/XshRRwoKdjzTAw+t===)
+    driver-class-name: org.postgresql.Driver
+    username: ENC(Up5MNBTdfUYu+K9+KrmaoUgG7jtIWN==)
+    password: ENC(1FZE2jBk82pvvUJA5HaZiFxBB95SiV==)
+  jpa:
+    hibernate:
+      ddl-auto: update    # 테이블 자동 생성 및 업데이트
+    show-sql: true        # 실행된 SQL 쿼리 출력
+    properties:
+      hibernate:
+        format_sql: true
+  h2:
+    console:
+      enabled: true       # H2 웹 콘솔 활성화
+      path: /h2-console   # H2 콘솔 경로
+  config:
+    import: classpath:dev/jasypt.yml    # jasypt.yml
+  sql:
+    init:
+      mode: never         # schema.sql, data.sql 실행
+
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    org.hibernate.orm.jdbc.bind: TRACE

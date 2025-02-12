@@ -39,6 +39,7 @@ dependencies {
     implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5'
 
     runtimeOnly 'com.h2database:h2'
+    implementation 'org.postgresql:postgresql:42.5.0'
 
     annotationProcessor 'org.projectlombok:lombok'
     compileOnly 'org.projectlombok:lombok'

@@ -1,25 +1,5 @@
 spring:
-  datasource:
-    url: ENC(w8JYlfb55/e2xRgnXr1I80CiyxyYPRdteF6lVTQH1Jo9yrcr5LzhqQ==)
-    driver-class-name: org.h2.Driver
-    username: ENC(uzYY3fWzGX4VSvJcNa7eEw==)
-    password:
-  jpa:
-    hibernate:
-      ddl-auto: update    # 테이블 자동 생성 및 업데이트
-    show-sql: true        # 실행된 SQL 쿼리 출력
-    properties:
-      hibernate:
-        format_sql: true
-  h2:
-    console:
-      enabled: true       # H2 웹 콘솔 활성화
-      path: /h2-console   # H2 콘솔 경로
   config:
-    import: jasypt.yml   # jasypt.yml
-
-logging:
-  level:
-    org.hibernate.SQL: DEBUG
-    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
-    org.hibernate.orm.jdbc.bind: TRACE
+    import: classpath:${spring.profiles.active}/application.yml
+  profiles:
+    active: test

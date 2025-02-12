@@ -4,8 +4,10 @@ import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
+@ActiveProfiles("test")
 public class JasyptConfigTest {
 
     @Value("${jasypt.encryptor.password}")
@@ -13,11 +15,13 @@ public class JasyptConfigTest {
 
     @Test
     void stringEncryptor() {
-        String url = "jdbc:h2:mem:emoney_namdo";
-        String username = "sa";
+        String url = "jdbc:postgresql://localhost:5432/postgres";
+        String username = "postgres";
+        String password = "postgres12#$";
 
         System.out.println("url: ".concat(jasyptEncoding(url)));
         System.out.println("sa: ".concat(jasyptEncoding(username)));
+        System.out.println("password: ".concat(jasyptEncoding(password)));
     }
 
     private String jasyptEncoding(String value) {

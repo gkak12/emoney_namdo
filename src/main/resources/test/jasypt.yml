@@ -1,0 +1,4 @@
+jasypt:
+  encryptor:
+    bean: jasyptEncryptor
+    password: 8GzV@lP$5Mv9tR^2W!==
