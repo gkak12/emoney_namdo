@@ -1,5 +1,6 @@
 package com.emoney.repository.impl;
 
+import com.emoney.comm.enums.EmoneyTypeEnums;
 import com.emoney.comm.util.ConditionBuilderUtil;
 import com.emoney.domain.dto.request.RequestEmoneyUsageHistorySearchDto;
 import com.emoney.domain.dto.response.ResponseEmoneyLogDto;
@@ -130,18 +131,18 @@ public class EmoneyUsageHistoryRepositoryDslImpl implements EmoneyUsageHistoryRe
 
         BooleanBuilder builder = new BooleanBuilder();
         builder
-            .and(ConditionBuilderUtil.buildEquals(emoney.userSeq, emoneyUsageHistorySearchDto.getUserSeq()))
             .and(ConditionBuilderUtil.buildDateBetween(emoneyUsageHistory.creationDateTime,
                 emoneyUsageHistorySearchDto.getSearchStartDate(),
                 emoneyUsageHistorySearchDto.getSearchEndDate()))
-            .and(ConditionBuilderUtil.buildEquals(emoneyUsageHistory.usageTypeSeq, emoneyUsageHistorySearchDto.getUsageTypeSeq()));
+            .and(ConditionBuilderUtil.buildEquals(emoneyUsageHistory.usageTypeSeq, emoneyUsageHistorySearchDto.getUsageTypeSeq()))
+            .and(emoneyUsageHistory.usageTypeSeq.eq(EmoneyTypeEnums.USAGE.getVal()));
 
         List<ResponseEmoneyUserDetailDto> list = jpaQueryFactory
                 .select(Projections.fields(
                     ResponseEmoneyUserDetailDto.class,
                         emoney.userSeq,
                         emoney.userSeq.count().as("usageCount"),
-                        Expressions.stringTemplate("TO_CHAR({0}, 'YYYY-MM-DD HH24:MI:SS')",
+                        Expressions.stringTemplate("TO_CHAR({0}, 'YYYY-MM-DD HH24:MI:SS')",     // Postgresql 문법
                             emoneyUsageHistory.creationDateTime.max()).as("latestUsageDateTime"),
                         emoneyUsageHistory.usageAmount.avg().as("averageAmount"),
                         emoneyUsageHistory.usageAmount.sum().as("totalAmount")

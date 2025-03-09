@@ -1,5 +1,8 @@
 package com.emoney.comm.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum EmoneyTypeEnums {
 
     CREATION(1L, "적립금 발급"),
@@ -11,7 +14,7 @@ public enum EmoneyTypeEnums {
     private final Long val;
     private final String desc;
 
-    private EmoneyTypeEnums(Long val, String desc) {
+    EmoneyTypeEnums(Long val, String desc) {
         this.val = val;
         this.desc = desc;
     }
