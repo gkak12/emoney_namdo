@@ -14,6 +14,6 @@ public class ResponseEmoneyUserDetailDto {
     private Long userSeq;
     private Long usageCount;
     private String latestUsageDateTime;
-    private Double averageAmount;
+    private Long averageAmount;
     private Long totalAmount;
 }

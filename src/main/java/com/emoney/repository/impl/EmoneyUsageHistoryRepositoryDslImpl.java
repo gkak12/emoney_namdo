@@ -142,9 +142,10 @@ public class EmoneyUsageHistoryRepositoryDslImpl implements EmoneyUsageHistoryRe
                     ResponseEmoneyUserDetailDto.class,
                         emoney.userSeq,
                         emoney.userSeq.count().as("usageCount"),
-                        Expressions.stringTemplate("TO_CHAR({0}, 'YYYY-MM-DD HH24:MI:SS')",     // Postgresql 문법
+                        Expressions.stringTemplate("TO_CHAR({0}, 'YYYY-MM-DD HH24:MI:SS')",     // Postgresql 문법 적용(TO_CHAR)
                             emoneyUsageHistory.creationDateTime.max()).as("latestUsageDateTime"),
-                        emoneyUsageHistory.usageAmount.avg().as("averageAmount"),
+                        Expressions.numberTemplate(Long.class, "ROUND({0}, 0)",               // 소수점 첫번째 자리에서 반올림
+                            emoneyUsageHistory.usageAmount.avg()).as("averageAmount"),
                         emoneyUsageHistory.usageAmount.sum().as("totalAmount")
                 ))
                 .from(emoneyUsageHistory)
@@ -157,7 +158,7 @@ public class EmoneyUsageHistoryRepositoryDslImpl implements EmoneyUsageHistoryRe
                 .fetch();
 
         int count = jpaQueryFactory
-                .select(emoneyUsageHistory.count())
+                .select(emoney.userSeq.count())
                 .from(emoneyUsageHistory)
                 .join(emoney)
                 .on(emoneyUsageHistory.emoney.emoneySeq.eq(emoney.emoneySeq))
