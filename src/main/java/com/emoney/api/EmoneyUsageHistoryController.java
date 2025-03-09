@@ -3,6 +3,7 @@ package com.emoney.api;
 import com.emoney.domain.dto.request.RequestEmoneyUsageHistorySearchDto;
 import com.emoney.domain.dto.response.ResponseEmoneyLogListDto;
 import com.emoney.domain.dto.response.ResponseEmoneyUsageHistoryLogListDto;
+import com.emoney.domain.dto.response.ResponseEmoneyUserDetailListDto;
 import com.emoney.service.EmoneyUsageHistoryService;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
@@ -30,5 +31,11 @@ public class EmoneyUsageHistoryController {
     @GetMapping("/usage-history-each-user")
     public ResponseEntity<ResponseEmoneyUsageHistoryLogListDto> findEmoneyUsageHistoryEachUser(@ParameterObject RequestEmoneyUsageHistorySearchDto emoneyUsageHistorySearchDto){
         return ResponseEntity.ok(emoneyUsageHistoryService.findEmoneyUsageHistoryEachUser(emoneyUsageHistorySearchDto));
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/user-detail")
+    public ResponseEntity<ResponseEmoneyUserDetailListDto> findEmoneyUserDetail(@ParameterObject RequestEmoneyUsageHistorySearchDto emoneyUsageHistorySearchDto){
+        return ResponseEntity.ok(emoneyUsageHistoryService.findEmoneyUserDetail(emoneyUsageHistorySearchDto));
     }
 }

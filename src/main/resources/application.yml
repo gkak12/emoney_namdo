@@ -39,10 +39,10 @@ logging:
 
 spring:
   datasource:
-    url: ENC(fAbwXDJL4DUiGTv8Dm8tsUv0z1Djq2SwowH9vHgGw+AX1MgBsBn+Fbag/XshRRwoKdjzTAw+tIs=)
+    url: ENC(dsadqJoxtVwMf+QKBKHf3j2bPTBbDZ0QfHp8F6iRKilQ81gtzsBIqbjnf2/sHWQcfkP/BxnvlpI=)
     driver-class-name: org.postgresql.Driver
-    username: ENC(Up5MNBTdfUYu+K9+KrmaoUgG7jtIWNTG)
-    password: ENC(1FZE2jBk82pvvUJA5HaZiFxBB95SiVxj)
+    username: ENC(LWJs2AgSdy6pNy8mbrdzp2E77F9RAb3M)
+    password: ENC(I+a5CrSrcAbw2eN3G0y4zdYyy0BxSeXh)
   jpa:
     hibernate:
       ddl-auto: update    # 테이블 자동 생성 및 업데이트

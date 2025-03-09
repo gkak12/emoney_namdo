@@ -4,9 +4,11 @@ import com.emoney.comm.util.ConditionBuilderUtil;
 import com.emoney.domain.dto.request.RequestEmoneyUsageHistorySearchDto;
 import com.emoney.domain.dto.response.ResponseEmoneyLogDto;
 import com.emoney.domain.dto.response.ResponseEmoneyUsageHistoryLogDto;
+import com.emoney.domain.dto.response.ResponseEmoneyUserDetailDto;
 import com.emoney.repository.EmoneyUsageHistoryRepositoryDsl;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -113,6 +115,53 @@ public class EmoneyUsageHistoryRepositoryDslImpl implements EmoneyUsageHistoryRe
                 .leftJoin(emoneyUsageHistory)
                 .on(emoney.emoneySeq.eq(emoneyUsageHistory.emoney.emoneySeq))
                 .where(builder)
+                .fetch()
+                .size();
+
+        return new PageImpl<>(list, pageable, count);
+    }
+
+    @Override
+    public Page<ResponseEmoneyUserDetailDto> findEmoneyUserDetail(RequestEmoneyUsageHistorySearchDto emoneyUsageHistorySearchDto) {
+        Pageable pageable = PageRequest.of(
+                emoneyUsageHistorySearchDto.getPageNumber(),
+                emoneyUsageHistorySearchDto.getPageSize()
+        );
+
+        BooleanBuilder builder = new BooleanBuilder();
+        builder
+            .and(ConditionBuilderUtil.buildEquals(emoney.userSeq, emoneyUsageHistorySearchDto.getUserSeq()))
+            .and(ConditionBuilderUtil.buildDateBetween(emoneyUsageHistory.creationDateTime,
+                emoneyUsageHistorySearchDto.getSearchStartDate(),
+                emoneyUsageHistorySearchDto.getSearchEndDate()))
+            .and(ConditionBuilderUtil.buildEquals(emoneyUsageHistory.usageTypeSeq, emoneyUsageHistorySearchDto.getUsageTypeSeq()));
+
+        List<ResponseEmoneyUserDetailDto> list = jpaQueryFactory
+                .select(Projections.fields(
+                    ResponseEmoneyUserDetailDto.class,
+                        emoney.userSeq,
+                        emoney.userSeq.count().as("usageCount"),
+                        Expressions.stringTemplate("TO_CHAR({0}, 'YYYY-MM-DD HH24:MI:SS')",
+                            emoneyUsageHistory.creationDateTime.max()).as("latestUsageDateTime"),
+                        emoneyUsageHistory.usageAmount.avg().as("averageAmount"),
+                        emoneyUsageHistory.usageAmount.sum().as("totalAmount")
+                ))
+                .from(emoneyUsageHistory)
+                .join(emoney)
+                .on(emoneyUsageHistory.emoney.emoneySeq.eq(emoney.emoneySeq))
+                .where(builder)
+                .groupBy(emoney.userSeq)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        int count = jpaQueryFactory
+                .select(emoneyUsageHistory.count())
+                .from(emoneyUsageHistory)
+                .join(emoney)
+                .on(emoneyUsageHistory.emoney.emoneySeq.eq(emoney.emoneySeq))
+                .where(builder)
+                .groupBy(emoney.userSeq)
                 .fetch()
                 .size();
 

@@ -14,4 +14,5 @@ public class RequestEmoneyUsageHistorySearchDto extends RequestPageDto {
     private Long userSeq;
     private LocalDate searchStartDate;
     private LocalDate searchEndDate;
+    private Long usageTypeSeq;
 }
