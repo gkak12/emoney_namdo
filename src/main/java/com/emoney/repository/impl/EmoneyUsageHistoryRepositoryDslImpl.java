@@ -5,7 +5,7 @@ import com.emoney.comm.util.ConditionBuilderUtil;
 import com.emoney.domain.dto.request.RequestEmoneyUsageHistorySearchDto;
 import com.emoney.domain.dto.response.ResponseEmoneyLogDto;
 import com.emoney.domain.dto.response.ResponseEmoneyUsageHistoryLogDto;
-import com.emoney.domain.dto.response.ResponseEmoneyUserDetailDto;
+import com.emoney.domain.dto.response.ResponseEmoneyUserDetailListDto;
 import com.emoney.repository.EmoneyUsageHistoryRepositoryDsl;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
@@ -123,7 +123,7 @@ public class EmoneyUsageHistoryRepositoryDslImpl implements EmoneyUsageHistoryRe
     }
 
     @Override
-    public Page<ResponseEmoneyUserDetailDto> findEmoneyUserDetail(RequestEmoneyUsageHistorySearchDto emoneyUsageHistorySearchDto) {
+    public Page<ResponseEmoneyUserDetailListDto.EmoneyUserDetail> findEmoneyUserDetail(RequestEmoneyUsageHistorySearchDto emoneyUsageHistorySearchDto) {
         Pageable pageable = PageRequest.of(
                 emoneyUsageHistorySearchDto.getPageNumber(),
                 emoneyUsageHistorySearchDto.getPageSize()
@@ -137,9 +137,9 @@ public class EmoneyUsageHistoryRepositoryDslImpl implements EmoneyUsageHistoryRe
             .and(ConditionBuilderUtil.buildEquals(emoneyUsageHistory.usageTypeSeq, emoneyUsageHistorySearchDto.getUsageTypeSeq()))
             .and(emoneyUsageHistory.usageTypeSeq.eq(EmoneyTypeEnums.USAGE.getVal()));
 
-        List<ResponseEmoneyUserDetailDto> list = jpaQueryFactory
+        List<ResponseEmoneyUserDetailListDto.EmoneyUserDetail> list = jpaQueryFactory
                 .select(Projections.fields(
-                    ResponseEmoneyUserDetailDto.class,
+                        ResponseEmoneyUserDetailListDto.EmoneyUserDetail.class,
                         emoney.userSeq,
                         emoney.userSeq.count().as("usageCount"),
                         Expressions.stringTemplate("TO_CHAR({0}, 'YYYY-MM-DD HH24:MI:SS')",     // Postgresql 문법 적용(TO_CHAR)
