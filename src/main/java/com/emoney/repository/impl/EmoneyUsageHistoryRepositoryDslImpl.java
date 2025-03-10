@@ -3,7 +3,7 @@ package com.emoney.repository.impl;
 import com.emoney.comm.enums.EmoneyTypeEnums;
 import com.emoney.comm.util.ConditionBuilderUtil;
 import com.emoney.domain.dto.request.RequestEmoneyUsageHistorySearchDto;
-import com.emoney.domain.dto.response.ResponseEmoneyLogDto;
+import com.emoney.domain.dto.response.ResponseEmoneyLogListDto;
 import com.emoney.domain.dto.response.ResponseEmoneyUsageDeductionListDto;
 import com.emoney.domain.dto.response.ResponseEmoneyUsageHistoryLogDto;
 import com.emoney.domain.dto.response.ResponseEmoneyUserDetailListDto;
@@ -33,7 +33,7 @@ public class EmoneyUsageHistoryRepositoryDslImpl implements EmoneyUsageHistoryRe
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public Page<ResponseEmoneyLogDto> findEmoneyTotalUsageAmountEachUser(RequestEmoneyUsageHistorySearchDto emoneyUsageHistorySearchDto) {
+    public Page<ResponseEmoneyLogListDto.LogDto> findEmoneyTotalUsageAmountEachUser(RequestEmoneyUsageHistorySearchDto emoneyUsageHistorySearchDto) {
         Pageable pageable = PageRequest.of(
             emoneyUsageHistorySearchDto.getPageNumber(),
             emoneyUsageHistorySearchDto.getPageSize()
@@ -46,9 +46,9 @@ public class EmoneyUsageHistoryRepositoryDslImpl implements EmoneyUsageHistoryRe
                 emoneyUsageHistorySearchDto.getSearchStartDate(),
                 emoneyUsageHistorySearchDto.getSearchEndDate()));
 
-        List<ResponseEmoneyLogDto> list = jpaQueryFactory
+        List<ResponseEmoneyLogListDto.LogDto> list = jpaQueryFactory
             .select(Projections.fields(
-                ResponseEmoneyLogDto.class,
+                ResponseEmoneyLogListDto.LogDto.class,
                 emoney.userSeq,
                 emoneyUsageHistory.usageAmount.sum().as("usageAmount")
             ))

@@ -18,7 +18,7 @@ public class EmoneyUsageHistoryServiceImpl implements EmoneyUsageHistoryService 
 
     @Override
     public ResponseEmoneyLogListDto findEmoneyTotalUsageAmountEachUser(RequestEmoneyUsageHistorySearchDto emoneyUsageHistorySearchDto) {
-        Page<ResponseEmoneyLogDto> page = emoneyUsageHistoryRepository.findEmoneyTotalUsageAmountEachUser(emoneyUsageHistorySearchDto);
+        Page<ResponseEmoneyLogListDto.LogDto> page = emoneyUsageHistoryRepository.findEmoneyTotalUsageAmountEachUser(emoneyUsageHistorySearchDto);
 
         ResponsePageDto responsePageDto = ResponsePageDto.builder()
                 .totalPages(page.getTotalPages())
