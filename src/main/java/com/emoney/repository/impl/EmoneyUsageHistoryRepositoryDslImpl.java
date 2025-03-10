@@ -4,6 +4,7 @@ import com.emoney.comm.enums.EmoneyTypeEnums;
 import com.emoney.comm.util.ConditionBuilderUtil;
 import com.emoney.domain.dto.request.RequestEmoneyUsageHistorySearchDto;
 import com.emoney.domain.dto.response.ResponseEmoneyLogDto;
+import com.emoney.domain.dto.response.ResponseEmoneyUsageDeductionListDto;
 import com.emoney.domain.dto.response.ResponseEmoneyUsageHistoryLogDto;
 import com.emoney.domain.dto.response.ResponseEmoneyUserDetailListDto;
 import com.emoney.repository.EmoneyUsageHistoryRepositoryDsl;
@@ -166,6 +167,49 @@ public class EmoneyUsageHistoryRepositoryDslImpl implements EmoneyUsageHistoryRe
                 .groupBy(emoney.userSeq)
                 .fetch()
                 .size();
+
+        return new PageImpl<>(list, pageable, count);
+    }
+
+    @Override
+    public Page<ResponseEmoneyUsageDeductionListDto.UsageDeductionDetail> findEmoneyUserUsageDeductionDetail(RequestEmoneyUsageHistorySearchDto emoneyUsageHistorySearchDto) {
+        Pageable pageable = PageRequest.of(
+                emoneyUsageHistorySearchDto.getPageNumber(),
+                emoneyUsageHistorySearchDto.getPageSize()
+        );
+
+        BooleanBuilder builder = new BooleanBuilder();
+        builder
+            .and(ConditionBuilderUtil.buildDateBetween(emoneyUsageHistory.creationDateTime,
+                emoneyUsageHistorySearchDto.getSearchStartDate(),
+                emoneyUsageHistorySearchDto.getSearchEndDate()))
+            .and(ConditionBuilderUtil.buildEquals(emoneyUsageHistory.usageTypeSeq, emoneyUsageHistorySearchDto.getUsageTypeSeq()));
+
+        List<ResponseEmoneyUsageDeductionListDto.UsageDeductionDetail> list = jpaQueryFactory
+            .select(Projections.fields(
+                ResponseEmoneyUsageDeductionListDto.UsageDeductionDetail.class,
+                emoney.userSeq,
+                Expressions.numberTemplate(Long.class, "SUM(CASE WHEN {0} = 2 THEN 1 ELSE 0 END)", EmoneyTypeEnums.USAGE.getVal()).as("usageCount"),
+                Expressions.numberTemplate(Long.class, "SUM(CASE WHEN {0} = 4 THEN 1 ELSE 0 END)", EmoneyTypeEnums.DEDUCTION.getVal()).as("deductionCount")
+            ))
+            .from(emoneyUsageHistory)
+            .join(emoney)
+            .on(emoneyUsageHistory.emoney.emoneySeq.eq(emoney.emoneySeq))
+            .where(builder)
+            .groupBy(emoney.userSeq)
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize())
+            .fetch();
+
+        int count = jpaQueryFactory
+            .select(emoney.userSeq.count())
+            .from(emoneyUsageHistory)
+            .join(emoney)
+            .on(emoneyUsageHistory.emoney.emoneySeq.eq(emoney.emoneySeq))
+            .where(builder)
+            .groupBy(emoney.userSeq)
+            .fetch()
+            .size();
 
         return new PageImpl<>(list, pageable, count);
     }

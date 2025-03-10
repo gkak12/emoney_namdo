@@ -60,4 +60,19 @@ public class EmoneyUsageHistoryServiceImpl implements EmoneyUsageHistoryService 
                 .page(responsePageDto)
                 .build();
     }
+
+    @Override
+    public ResponseEmoneyUsageDeductionListDto findEmoneyUserUsageDeductionDetail(RequestEmoneyUsageHistorySearchDto emoneyUsageHistorySearchDto) {
+        Page<ResponseEmoneyUsageDeductionListDto.UsageDeductionDetail> page = emoneyUsageHistoryRepository.findEmoneyUserUsageDeductionDetail(emoneyUsageHistorySearchDto);
+
+        ResponsePageDto responsePageDto = ResponsePageDto.builder()
+                .totalPages(page.getTotalPages())
+                .totalItems(page.getTotalElements())
+                .build();
+
+        return ResponseEmoneyUsageDeductionListDto.builder()
+                .list(page.getContent())
+                .page(responsePageDto)
+                .build();
+    }
 }

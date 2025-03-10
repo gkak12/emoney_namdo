@@ -2,6 +2,7 @@ package com.emoney.api;
 
 import com.emoney.domain.dto.request.RequestEmoneyUsageHistorySearchDto;
 import com.emoney.domain.dto.response.ResponseEmoneyLogListDto;
+import com.emoney.domain.dto.response.ResponseEmoneyUsageDeductionListDto;
 import com.emoney.domain.dto.response.ResponseEmoneyUsageHistoryLogListDto;
 import com.emoney.domain.dto.response.ResponseEmoneyUserDetailListDto;
 import com.emoney.service.EmoneyUsageHistoryService;
@@ -37,5 +38,11 @@ public class EmoneyUsageHistoryController {
     @GetMapping("/user-detail")
     public ResponseEntity<ResponseEmoneyUserDetailListDto> findEmoneyUserDetail(@ParameterObject RequestEmoneyUsageHistorySearchDto emoneyUsageHistorySearchDto){
         return ResponseEntity.ok(emoneyUsageHistoryService.findEmoneyUserDetail(emoneyUsageHistorySearchDto));
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/usage-deduction")
+    public ResponseEntity<ResponseEmoneyUsageDeductionListDto> findEmoneyUserUsageDeductionDetail(@ParameterObject RequestEmoneyUsageHistorySearchDto emoneyUsageHistorySearchDto){
+        return ResponseEntity.ok(emoneyUsageHistoryService.findEmoneyUserUsageDeductionDetail(emoneyUsageHistorySearchDto));
     }
 }
