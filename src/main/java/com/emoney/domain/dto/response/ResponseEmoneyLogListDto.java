@@ -9,6 +9,8 @@ import java.util.List;
 
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ResponseEmoneyLogListDto {
 
     private List<LogDto> list;
