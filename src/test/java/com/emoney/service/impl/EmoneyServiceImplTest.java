@@ -1,5 +1,6 @@
 package com.emoney.service.impl;
 
+import com.emoney.domain.dto.request.RequestEmoneyDeductDto;
 import com.emoney.domain.entity.Emoney;
 import com.emoney.repository.EmoneyRepository;
 import com.emoney.repository.EmoneyUsageHistoryRepository;
@@ -12,6 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class EmoneyServiceImplTest {
@@ -40,9 +42,14 @@ public class EmoneyServiceImplTest {
                 .remainAmount(300L)
                 .build();
 
-        List<Emoney> emoneyList = Arrays.asList(emoney1, emoney2);
+        RequestEmoneyDeductDto dto = RequestEmoneyDeductDto.builder()
+                .userSeq(1L)
+                .build();
+
+        when(emoneyRepository.findAllUsableEmoneyList(dto)).thenReturn(Arrays.asList(emoney1, emoney2));
 
         // When
+        List<Emoney> emoneyList = emoneyRepository.findAllUsableEmoneyList(dto);
         Long totalRemainAmount = emoneyList.stream().map(Emoney::getRemainAmount).reduce(0L, Long::sum);
         Boolean resultBoolean = emoneyRequestAmount > totalRemainAmount ? true : false;
 
