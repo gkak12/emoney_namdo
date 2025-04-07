@@ -95,4 +95,36 @@ public class EmoneyServiceImplTest {
         Long resultRemainAmount = emoneyList.stream().map(Emoney::getRemainAmount).reduce(0L, Long::sum);
         assertEquals(expectationRemainAmount, resultRemainAmount);
     }
+
+    @Test
+    void useCancelEmoney_적립금_취소_테스트(){
+        // Given
+        Long expectEmonayAmonut = 1400L;
+
+        Emoney emoney = Emoney.builder()
+                .amount(500L)
+                .usageAmount(100L)
+                .remainAmount(400L)
+                .build();
+
+        Emoney cancelEmoney = Emoney.builder()
+                .amount(1000L)
+                .usageAmount(0L)
+                .remainAmount(1000L)
+                .build();
+
+        RequestEmoneyDeductDto dto = RequestEmoneyDeductDto.builder()
+                .userSeq(1L)
+                .build();
+
+        when(emoneyRepository.findAllUsableEmoneyList(dto)).thenReturn(Arrays.asList(emoney, cancelEmoney));
+
+        // When
+        emoneyRepository.save(cancelEmoney);
+        Long totalEmoneyAmount = emoneyRepository.findAllUsableEmoneyList(dto).stream()
+                .map(Emoney::getRemainAmount).reduce(0L, Long::sum);
+
+        // Then
+        assertEquals(expectEmonayAmonut, totalEmoneyAmount);
+    }
 }
