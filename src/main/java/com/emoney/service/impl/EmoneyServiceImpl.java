@@ -40,7 +40,7 @@ public class EmoneyServiceImpl implements EmoneyService {
     }
 
     @Override
-    public ResponseEmoneyResponseListDto findPageEmoneys(RequestEmoneySearchDto emoneyRequestSearchDto) {
+    public ResponseEmoneyListDto findPageEmoneys(RequestEmoneySearchDto emoneyRequestSearchDto) {
         Page<Emoney> page = emoneyRepository.findEmoneyPaging(emoneyRequestSearchDto);
 
         ResponsePageDto responsePageDto = ResponsePageDto.builder()
@@ -52,14 +52,14 @@ public class EmoneyServiceImpl implements EmoneyService {
             .map(emoneyMapper::toResponseDto)
             .toList();
 
-        return ResponseEmoneyResponseListDto.builder()
+        return ResponseEmoneyListDto.builder()
                 .page(responsePageDto)
                 .list(list)
                 .build();
     }
 
     @Override
-    public ResponseEmoneyResponseDetailDto findEmoneyDetail(Long emoneySeq) {
+    public ResponseEmoneyDetailDto findEmoneyDetail(Long emoneySeq) {
         Emoney emoney = emoneyRepository.findById(emoneySeq)
                 .orElseThrow(() -> new EmoneyException(EmoneyErrorEnums.NOT_FOUND, "상세 조회 대상 적립금 존재하지 않습니다."));
         ResponseEmoneyDto responseEmoneyDto = emoneyMapper.toResponseDto(emoney);
@@ -68,7 +68,7 @@ public class EmoneyServiceImpl implements EmoneyService {
                 .map(emoneyUsageHistoryMapper::toResponseDto)
                 .toList();
 
-        return ResponseEmoneyResponseDetailDto.builder()
+        return ResponseEmoneyDetailDto.builder()
                 .responseEmoneyDto(responseEmoneyDto)
                 .responseEmoneyUsageHistoryDtoList(responseEmoneyUsageHistoryDtoList)
                 .build();

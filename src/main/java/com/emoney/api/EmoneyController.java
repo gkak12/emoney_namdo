@@ -3,8 +3,8 @@ package com.emoney.api;
 import com.emoney.comm.annotation.ValidEmoneySeq;
 import com.emoney.domain.dto.request.*;
 import com.emoney.domain.dto.response.ResponseEmoneyDto;
-import com.emoney.domain.dto.response.ResponseEmoneyResponseDetailDto;
-import com.emoney.domain.dto.response.ResponseEmoneyResponseListDto;
+import com.emoney.domain.dto.response.ResponseEmoneyDetailDto;
+import com.emoney.domain.dto.response.ResponseEmoneyListDto;
 import com.emoney.service.EmoneyService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -30,13 +30,13 @@ public class EmoneyController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/page")
-    public ResponseEntity<ResponseEmoneyResponseListDto> findPageEmoneys(@ParameterObject RequestEmoneySearchDto emoneyRequestSearchDto) {
+    public ResponseEntity<ResponseEmoneyListDto> findPageEmoneys(@ParameterObject RequestEmoneySearchDto emoneyRequestSearchDto) {
         return ResponseEntity.ok(emoneyService.findPageEmoneys(emoneyRequestSearchDto));
     }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/detail/{emoneySeq}")
-    public ResponseEntity<ResponseEmoneyResponseDetailDto> findEmoneyDetail(@PathVariable @Valid @ValidEmoneySeq Long emoneySeq) {
+    public ResponseEntity<ResponseEmoneyDetailDto> findEmoneyDetail(@PathVariable @Valid @ValidEmoneySeq Long emoneySeq) {
         return ResponseEntity.ok(emoneyService.findEmoneyDetail(emoneySeq));
     }
 

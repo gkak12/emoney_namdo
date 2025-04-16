@@ -11,8 +11,8 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ResponseEmoneyResponseListDto {
+public class ResponseEmoneyDetailDto {
 
-    private List<ResponseEmoneyDto> list;
-    private ResponsePageDto page;
+    private ResponseEmoneyDto responseEmoneyDto;
+    private List<ResponseEmoneyUsageHistoryDto> responseEmoneyUsageHistoryDtoList;
 }

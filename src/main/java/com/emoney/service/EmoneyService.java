@@ -1,8 +1,8 @@
 package com.emoney.service;
 
 import com.emoney.domain.dto.request.*;
-import com.emoney.domain.dto.response.ResponseEmoneyResponseDetailDto;
-import com.emoney.domain.dto.response.ResponseEmoneyResponseListDto;
+import com.emoney.domain.dto.response.ResponseEmoneyDetailDto;
+import com.emoney.domain.dto.response.ResponseEmoneyListDto;
 import com.emoney.domain.dto.response.ResponseEmoneyDto;
 
 import java.util.List;
@@ -22,7 +22,7 @@ public interface EmoneyService {
      * @param emoneyRequestSearchDto
      * @return
      */
-    ResponseEmoneyResponseListDto findPageEmoneys(RequestEmoneySearchDto emoneyRequestSearchDto);
+    ResponseEmoneyListDto findPageEmoneys(RequestEmoneySearchDto emoneyRequestSearchDto);
 
     /**
      * 적립금 상세 조회
@@ -30,7 +30,7 @@ public interface EmoneyService {
      * @param emoneySeq
      * @return
      */
-    ResponseEmoneyResponseDetailDto findEmoneyDetail(Long emoneySeq);
+    ResponseEmoneyDetailDto findEmoneyDetail(Long emoneySeq);
 
     /**
      * 적립금 지급
