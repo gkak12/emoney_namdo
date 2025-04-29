@@ -93,7 +93,7 @@ public class EmoneyServiceImpl implements EmoneyService {
         validateUsableEmoneyList(emoneyList, "사용 가능한 적립금이 없습니다.");
 
         // 3. 사용/차감 요청한 적립금이 사용/차감 가능 전체 적립금 보다 큰지 비교(적립금 잔액 검사)
-        Long totalRemainAmount = emoneyList.stream().map(Emoney::getRemainAmount).reduce(0L, Long::sum);
+        Long totalRemainAmount = emoneyList.stream().mapToLong(Emoney::getRemainAmount).sum();
         validateRequestEmoney(emoneyRequestAmount, totalRemainAmount, "사용 요청한 적립금이 사용 가능 전체 적립금 보다 커서 불가합니다.");
 
         // 4. 적립금 사용/차감

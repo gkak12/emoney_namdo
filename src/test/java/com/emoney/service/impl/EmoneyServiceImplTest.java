@@ -122,7 +122,7 @@ public class EmoneyServiceImplTest {
         // When
         emoneyRepository.save(cancelEmoney);
         Long totalEmoneyAmount = emoneyRepository.findAllUsableEmoneyList(dto).stream()
-                .map(Emoney::getRemainAmount).reduce(0L, Long::sum);
+                .mapToLong(Emoney::getRemainAmount).sum();
 
         // Then
         assertEquals(expectEmonayAmonut, totalEmoneyAmount);
