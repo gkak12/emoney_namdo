@@ -3,3 +3,9 @@ spring:
     active: ${springProfilesActive:dev}  # default dev 환경
   config:
     import: jasypt.yml    # jasypt.yml
+
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    org.hibernate.orm.jdbc.bind: TRACE

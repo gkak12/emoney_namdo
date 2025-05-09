@@ -6,7 +6,7 @@ spring:
     password: ENC(I+a5CrSrcAbw2eN3G0y4zdYyy0BxSeXh)
   jpa:
     hibernate:
-      ddl-auto: update    # 테이블 자동 생성 및 업데이트
+      ddl-auto: validate  # 엔티티와 테이블 스키마 검증
     show-sql: true        # 실행된 SQL 쿼리 출력
     properties:
       hibernate:
@@ -14,9 +14,3 @@ spring:
   sql:
     init:
       mode: never         # schema.sql, data.sql 실행
-
-logging:
-  level:
-    org.hibernate.SQL: DEBUG
-    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
-    org.hibernate.orm.jdbc.bind: TRACE

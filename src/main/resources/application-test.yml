@@ -18,9 +18,3 @@ spring:
   sql:
     init:
       mode: always        # schema.sql, data.sql 실행
-
-logging:
-  level:
-    org.hibernate.SQL: DEBUG
-    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
-    org.hibernate.orm.jdbc.bind: TRACE
