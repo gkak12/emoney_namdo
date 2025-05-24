@@ -23,6 +23,9 @@ repositories {
     mavenCentral()
 }
 
+def activeProfile = System.getProperty("spring.profiles.active")
+print("------------ profile: " + activeProfile + " ------------")
+
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
@@ -38,10 +41,10 @@ dependencies {
 
     implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5'
 
-    if (project.hasProperty('test')) {  // test 환경에서만 H2 의존성 추가
+    if (activeProfile == 'test') {  // test 환경에서만 H2 의존성 추가
         runtimeOnly 'com.h2database:h2'
-    } else {   // 나머지 개발환경에서 PostgreSQL 의존성 추가
-        implementation 'org.postgresql:postgresql:42.5.0'
+    } else {    // 나머지 개발환경에서 PostgreSQL 의존성 추가
+        runtimeOnly 'org.postgresql:postgresql:42.5.0'
     }
 
     annotationProcessor 'org.projectlombok:lombok'
